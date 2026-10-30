@@ -41,7 +41,7 @@ export default function ResumePortfolio() {
   const [isDevMode, setIsDevMode] = useState<boolean>(false);
   const [currentYear, setCurrentYear] = useState<number>(2026);
 
-  // 1. PROFIL STATE (Default foto profil Sena: /docs/Sena.jpg)
+  // 1. PROFIL STATE
   const [portfolioData, setPortfolioData] = useState({
     name: "Muhammad Ibnu Sena",
     title: "Food Technology Fresh Graduate",
@@ -50,7 +50,7 @@ export default function ResumePortfolio() {
     phone: "6285814409513",
     location: "South Jakarta, DKI Jakarta, Indonesia",
     photoUrl: "/docs/Sena.png", 
-    cvUrl: "/docs/CV_MIS.pdf", // Path file CV
+    cvUrl: "/docs/CV_MIS.pdf",
   });
   const [draftProfile, setDraftProfile] = useState({ ...portfolioData });
 
@@ -63,7 +63,7 @@ export default function ResumePortfolio() {
   });
   const [draftEducation, setDraftEducation] = useState({ ...education });
 
-  // 2. EXPERIENCE STATE (Multi-file support)
+  // 2. EXPERIENCE STATE
   const [experiences, setExperiences] = useState([
     {
       id: "exp_bpjph",
@@ -108,7 +108,7 @@ export default function ResumePortfolio() {
   const [newExp, setNewExp] = useState({ title: "", company: "", period: "", desc: "", files: [{ label: "", url: "" }] });
   const [draftExperience, setDraftExperience] = useState<any>(null);
 
-  // 3. PROFESSIONAL TRAINING STATE (Multi-file support)
+  // 3. PROFESSIONAL TRAINING STATE
   const [trainings, setTrainings] = useState([
     {
       id: "tr_1",
@@ -144,7 +144,7 @@ export default function ResumePortfolio() {
   ]);
   const [draftTrainings, setDraftTrainings] = useState<any[]>([]);
 
-  // 4. ACHIEVEMENTS STATE (Multi-file support)
+  // 4. ACHIEVEMENTS STATE
   const [achievements, setAchievements] = useState([
     {
       id: "ach_1",
@@ -167,7 +167,6 @@ export default function ResumePortfolio() {
       desc: "Developed a comprehensive SJPH manual, supporting audit documentation, and conducted simulated halal audits for food business certification.",
       badge: "Certificate No: ID31410022876950625",
       fileUrls: [
-        { label: "Halal Document", url: "/docs/BPJPH_MIS.pdf" },
         { label: "Sertifikat Halal (SH_YP)", url: "/docs/SH_YP.pdf" }
       ],
     },
@@ -178,7 +177,6 @@ export default function ResumePortfolio() {
       desc: "Drafted a complete HACCP system manual for a simulated food industry model, including hazard analysis and critical control point (CCP) limits.",
       badge: "HACCP System Manual",
       fileUrls: [
-        { label: "HACCP Manual", url: "/docs/HACCP_MIS.pdf" },
         { label: "HACCP Project File", url: "/docs/HACCP_PROJECT.pdf" }
       ],
     },
@@ -192,7 +190,6 @@ export default function ResumePortfolio() {
         { label: "CPPOB Project", url: "/docs/CPPOB_PROJECT.pdf" },
         { label: "SSOP Project", url: "/docs/SSOP_PROJECT.pdf" },
         { label: "Audit GMP", url: "/docs/AUDIT_GMP.pdf" },
-        { label: "GMP Manual", url: "/docs/GMP_MIS.pdf" }
       ],
     }
   ]);
@@ -213,7 +210,6 @@ export default function ResumePortfolio() {
 
   const [editingSection, setEditingSection] = useState<string | null>(null);
 
-  // Accordion state eksklusif berbasis klik
   const [expandedExp, setExpandedExp] = useState<string | null>("exp_bpjph");
   const [expandedProj, setExpandedProj] = useState<string | null>("proj_halal");
 
@@ -373,7 +369,7 @@ export default function ResumePortfolio() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 font-sans antialiased selection:bg-emerald-500 selection:text-white pb-24 sm:pb-28 relative overflow-x-hidden">
       
-      {/* 🌟 ENHANCED BACKGROUND DECORATIVE SHAPES & GRADIENTS */}
+      {/* 🌟 ANIMATED BACKGROUND SHAPES & GRADIENTS */}
       <div className="absolute top-0 left-0 w-full h-[500px] sm:h-[600px] bg-gradient-to-br from-emerald-100/80 via-teal-50/50 to-indigo-100/40 pointer-events-none -z-10" />
       <div className="absolute top-20 -left-28 sm:-left-32 w-72 sm:w-96 h-72 sm:h-96 bg-emerald-300/25 rounded-full blur-[80px] sm:blur-[100px] pointer-events-none -z-10 animate-pulse" />
       <div className="absolute top-[350px] sm:top-[450px] -right-28 sm:-right-32 w-72 sm:w-[450px] h-72 sm:h-[450px] bg-teal-300/20 rounded-full blur-[90px] sm:blur-[120px] pointer-events-none -z-10" />
@@ -382,11 +378,11 @@ export default function ResumePortfolio() {
 
       <main className="max-w-4xl mx-auto px-3.5 sm:px-6 lg:px-8 pt-5 sm:pt-8 relative z-10">
         
-        {/* HEADER / PROFILE HERO */}
-        <header className="bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-lg sm:shadow-xl shadow-slate-200/50 transition-all duration-500 relative overflow-hidden mb-6 sm:mb-8">
+        {/* HEADER / PROFILE HERO WITH 3D TILT ANIMATION */}
+        <header className="bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-xl shadow-slate-200/50 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:rotate-[0.3deg] relative overflow-hidden mb-6 sm:mb-8 group">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-5 sm:gap-6 relative z-10">
             <div className="flex flex-col sm:flex-row items-center sm:items-center gap-4 sm:gap-5 w-full text-center sm:text-left">
-              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-700 p-1 shadow-lg shadow-emerald-500/20 flex-shrink-0">
+              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-700 p-1 shadow-lg shadow-emerald-500/20 flex-shrink-0 group-hover:scale-105 transition-transform duration-300">
                 <div className="w-full h-full bg-slate-50 rounded-[14px] flex items-center justify-center overflow-hidden">
                   {portfolioData.photoUrl ? (
                     <img src={portfolioData.photoUrl} alt={portfolioData.name} className="w-full h-full object-cover" />
@@ -435,7 +431,7 @@ export default function ResumePortfolio() {
                 target="_blank" 
                 rel="noreferrer" 
                 download
-                className="flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold shadow-md shadow-emerald-600/20 transition-all cursor-pointer transform hover:-translate-y-0.5 active:translate-y-0"
+                className="flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold shadow-md shadow-emerald-600/20 transition-all cursor-pointer transform hover:-translate-y-1 hover:scale-105 active:translate-y-0"
               >
                 <Download className="w-4 h-4 text-white flex-shrink-0 animate-bounce" />
                 <span>Download Curriculum Vitae (CV)</span>
@@ -516,30 +512,30 @@ export default function ResumePortfolio() {
           )}
         </header>
 
-        {/* HERO STATS */}
+        {/* HERO STATS WITH 3D TILT EFFECT */}
         <section className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
-          <div onClick={() => scrollToCard("exp_bpjph", 'exp')} className="bg-white/90 backdrop-blur-sm border border-slate-200/80 p-3.5 sm:p-4 rounded-2xl shadow-sm sm:shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer group">
-            <p className="text-2xl sm:text-3xl font-extrabold text-emerald-600">5,500+</p>
+          <div onClick={() => scrollToCard("exp_bpjph", 'exp')} className="bg-white/90 backdrop-blur-sm border border-slate-200/80 p-3.5 sm:p-4 rounded-2xl shadow-sm sm:shadow-md hover:shadow-2xl hover:-translate-y-2 hover:-rotate-1 transition-all duration-300 cursor-pointer group">
+            <p className="text-2xl sm:text-3xl font-extrabold text-emerald-600 group-hover:scale-110 transition-transform">5,500+</p>
             <p className="text-[11px] text-slate-500 mt-1 font-medium flex items-center justify-between">
-              Halal Document Submission <ArrowRight className="w-3 h-3 text-emerald-600" />
+              Halal Document Submission <ArrowRight className="w-3 h-3 text-emerald-600 opacity-0 group-hover:opacity-100 transition" />
             </p>
           </div>
-          <div onClick={() => scrollToCard("exp_bem", 'exp')} className="bg-white/90 backdrop-blur-sm border border-slate-200/80 p-3.5 sm:p-4 rounded-2xl shadow-sm sm:shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer group">
-            <p className="text-2xl sm:text-3xl font-extrabold text-indigo-600">450+</p>
+          <div onClick={() => scrollToCard("exp_bem", 'exp')} className="bg-white/90 backdrop-blur-sm border border-slate-200/80 p-3.5 sm:p-4 rounded-2xl shadow-sm sm:shadow-md hover:shadow-2xl hover:-translate-y-2 hover:rotate-1 transition-all duration-300 cursor-pointer group">
+            <p className="text-2xl sm:text-3xl font-extrabold text-indigo-600 group-hover:scale-110 transition-transform">450+</p>
             <p className="text-[11px] text-slate-500 mt-1 font-medium flex items-center justify-between">
-              BEM Files & Letters <ArrowRight className="w-3 h-3 text-indigo-600" />
+              BEM Files & Letters <ArrowRight className="w-3 h-3 text-indigo-600 opacity-0 group-hover:opacity-100 transition" />
             </p>
           </div>
-          <div onClick={() => scrollToCard("exp_lab", 'exp')} className="bg-white/90 backdrop-blur-sm border border-slate-200/80 p-3.5 sm:p-4 rounded-2xl shadow-sm sm:shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer group">
-            <p className="text-2xl sm:text-3xl font-extrabold text-amber-600">4 Courses</p>
+          <div onClick={() => scrollToCard("exp_lab", 'exp')} className="bg-white/90 backdrop-blur-sm border border-slate-200/80 p-3.5 sm:p-4 rounded-2xl shadow-sm sm:shadow-md hover:shadow-2xl hover:-translate-y-2 hover:-rotate-1 transition-all duration-300 cursor-pointer group">
+            <p className="text-2xl sm:text-3xl font-extrabold text-amber-600 group-hover:scale-110 transition-transform">4 Courses</p>
             <p className="text-[11px] text-slate-500 mt-1 font-medium flex items-center justify-between">
-              Lab Assistant <ArrowRight className="w-3 h-3 text-amber-600" />
+              Lab Assistant <ArrowRight className="w-3 h-3 text-amber-600 opacity-0 group-hover:opacity-100 transition" />
             </p>
           </div>
-          <div onClick={() => scrollToCard("proj_halal", 'proj')} className="bg-white/90 backdrop-blur-sm border border-slate-200/80 p-3.5 sm:p-4 rounded-2xl shadow-sm sm:shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer group">
-            <p className="text-2xl sm:text-3xl font-extrabold text-teal-600">3.57</p>
+          <div onClick={() => scrollToCard("proj_halal", 'proj')} className="bg-white/90 backdrop-blur-sm border border-slate-200/80 p-3.5 sm:p-4 rounded-2xl shadow-sm sm:shadow-md hover:shadow-2xl hover:-translate-y-2 hover:rotate-1 transition-all duration-300 cursor-pointer group">
+            <p className="text-2xl sm:text-3xl font-extrabold text-teal-600 group-hover:scale-110 transition-transform">3.57</p>
             <p className="text-[11px] text-slate-500 mt-1 font-medium flex items-center justify-between">
-              Bachelor's GPA <ArrowRight className="w-3 h-3 text-teal-600" />
+              Bachelor's GPA <ArrowRight className="w-3 h-3 text-teal-600 opacity-0 group-hover:opacity-100 transition" />
             </p>
           </div>
         </section>
@@ -547,7 +543,7 @@ export default function ResumePortfolio() {
         <div className="space-y-6 sm:space-y-8">
 
           {/* 1. EDUCATION SECTION */}
-          <section className="bg-white/90 backdrop-blur-sm border border-slate-200/80 rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-lg sm:shadow-xl shadow-slate-200/40 transition-all duration-500">
+          <section className="bg-white/90 backdrop-blur-sm border border-slate-200/80 rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-lg sm:shadow-xl shadow-slate-200/40 hover:-translate-y-1.5 hover:shadow-2xl transition-all duration-500">
             <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
               <h2 className="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
                 <GraduationCap className="w-5 h-5 text-emerald-600" /> Education
@@ -625,8 +621,8 @@ export default function ResumePortfolio() {
             </div>
           </section>
 
-          {/* 2. EXPERIENCE SECTION */}
-          <section className="bg-white/90 backdrop-blur-sm border border-slate-200/80 rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-lg sm:shadow-xl shadow-slate-200/40 transition-all duration-500">
+          {/* 2. EXPERIENCE SECTION WITH 3D HOVER ANIMATION */}
+          <section className="bg-white/90 backdrop-blur-sm border border-slate-200/80 rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-lg sm:shadow-xl shadow-slate-200/40 hover:-translate-y-1.5 hover:shadow-2xl transition-all duration-500">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-5 sm:mb-6 pb-3.5 border-b border-slate-100">
               <h2 className="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
                 <Briefcase className="w-5 h-5 text-emerald-600" />
@@ -691,17 +687,17 @@ export default function ResumePortfolio() {
                 <div 
                   key={exp.id} 
                   id={exp.id} 
-                  className="border border-slate-200 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-lg bg-white"
+                  className="border border-slate-200 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 bg-white group/card"
                 >
                   <div 
                     onClick={() => setExpandedExp(expandedExp === exp.id ? null : exp.id)}
-                    className="w-full p-3.5 sm:p-4 bg-slate-50/80 hover:bg-slate-100/80 flex items-start sm:items-center justify-between transition-colors cursor-pointer gap-2"
+                    className="w-full p-3.5 sm:p-4 bg-slate-50/80 hover:bg-slate-100/90 flex items-start sm:items-center justify-between transition-colors cursor-pointer gap-2"
                   >
                     <div className="text-left flex-1 pr-2">
                       <span className="text-[10px] font-extrabold text-emerald-700 uppercase tracking-wider bg-emerald-100/80 px-2 py-0.5 rounded-md inline-block mb-1">
                         {exp.period}
                       </span>
-                      <h3 className="font-bold text-slate-900 text-xs sm:text-base leading-snug">
+                      <h3 className="font-bold text-slate-900 text-xs sm:text-base leading-snug group-hover/card:text-emerald-700 transition-colors">
                         {exp.title}
                       </h3>
                       <p className="text-[11px] sm:text-xs text-slate-500 font-medium mt-0.5">{exp.company}</p>
@@ -735,7 +731,7 @@ export default function ResumePortfolio() {
                           </button>
                         </>
                       )}
-                      <div className="p-1 sm:p-1.5 rounded-full bg-white border border-slate-200 shadow-xs">
+                      <div className="p-1 sm:p-1.5 rounded-full bg-white border border-slate-200 shadow-xs group-hover/card:scale-110 transition-transform">
                         {expandedExp === exp.id ? <ChevronUp className="w-4 h-4 text-emerald-600" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
                       </div>
                     </div>
@@ -818,7 +814,7 @@ export default function ResumePortfolio() {
                           <p className="font-bold text-slate-900 mb-2">Attached Documents / Proofs:</p>
                           <div className="flex flex-wrap gap-2">
                             {exp.fileUrls.map((file: any, idx: number) => (
-                              <a key={idx} href={file.url} target="_blank" rel="noreferrer" className="px-3 py-2 sm:py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-lg font-bold text-[11px] sm:text-[10px] transition flex items-center gap-1.5 shadow-xs">
+                              <a key={idx} href={file.url} target="_blank" rel="noreferrer" className="px-3 py-2 sm:py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-lg font-bold text-[11px] sm:text-[10px] transition transform hover:scale-105 flex items-center gap-1.5 shadow-xs">
                                 <FileText className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" /> 
                                 <span className="break-all">{file.label}</span> 
                                 <ExternalLink className="w-3 h-3 flex-shrink-0" />
@@ -835,7 +831,7 @@ export default function ResumePortfolio() {
           </section>
 
           {/* 3. PROFESSIONAL TRAINING */}
-          <section className="bg-white/90 backdrop-blur-sm border border-slate-200/80 rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-lg sm:shadow-xl shadow-slate-200/40 transition-all duration-500">
+          <section className="bg-white/90 backdrop-blur-sm border border-slate-200/80 rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-lg sm:shadow-xl shadow-slate-200/40 hover:-translate-y-1.5 hover:shadow-2xl transition-all duration-500">
             <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
               <h2 className="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
                 <Award className="w-5 h-5 text-emerald-600" /> Professional Training & Certifications
@@ -930,14 +926,14 @@ export default function ResumePortfolio() {
 
             <div className="space-y-3.5 sm:space-y-4">
               {trainings.map(tr => (
-                <div key={tr.id} className="p-3.5 sm:p-4 bg-slate-50 rounded-2xl border border-slate-200/70 text-xs space-y-2 hover:border-emerald-300 transition">
+                <div key={tr.id} className="p-3.5 sm:p-4 bg-slate-50 rounded-2xl border border-slate-200/70 text-xs space-y-2 hover:border-emerald-300 hover:shadow-md transition">
                   <div>
                     <p className="font-bold text-slate-900 text-xs sm:text-sm leading-snug">{tr.title}</p>
                     <p className="text-[11px] text-slate-500 font-medium mt-0.5">{tr.organizer} • {tr.date}</p>
                   </div>
                   <div className="flex flex-wrap gap-2 pt-2 border-t border-slate-200/60">
                     {tr.fileUrls && tr.fileUrls.map((file: any, idx: number) => (
-                      <a key={idx} href={file.url} target="_blank" rel="noreferrer" className="px-3 py-2 sm:py-1.5 bg-white hover:bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-lg font-bold text-[11px] sm:text-[10px] transition flex items-center gap-1 shadow-xs">
+                      <a key={idx} href={file.url} target="_blank" rel="noreferrer" className="px-3 py-2 sm:py-1.5 bg-white hover:bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-lg font-bold text-[11px] sm:text-[10px] transition transform hover:scale-105 flex items-center gap-1 shadow-xs">
                         <FileText className="w-3.5 h-3.5 flex-shrink-0" /> 
                         <span className="break-all">{file.label}</span> 
                         <ExternalLink className="w-3 h-3 flex-shrink-0" />
@@ -950,7 +946,7 @@ export default function ResumePortfolio() {
           </section>
 
           {/* 4. HONORS & ACHIEVEMENTS */}
-          <section className="bg-white/90 backdrop-blur-sm border border-slate-200/80 rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-lg sm:shadow-xl shadow-slate-200/40 transition-all duration-500">
+          <section className="bg-white/90 backdrop-blur-sm border border-slate-200/80 rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-lg sm:shadow-xl shadow-slate-200/40 hover:-translate-y-1.5 hover:shadow-2xl transition-all duration-500">
             <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
               <h2 className="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
                 <Trophy className="w-5 h-5 text-amber-500" /> Honors & Key Achievements
@@ -1057,7 +1053,7 @@ export default function ResumePortfolio() {
 
             <div className="space-y-3.5 sm:space-y-4">
               {achievements.map((ach) => (
-                <div key={ach.id} className="p-3.5 sm:p-4 bg-amber-50/60 border border-amber-200/70 rounded-2xl text-xs shadow-xs space-y-3 relative">
+                <div key={ach.id} className="p-3.5 sm:p-4 bg-amber-50/60 border border-amber-200/70 rounded-2xl text-xs shadow-xs space-y-3 relative hover:shadow-md transition">
                   <div>
                     <p className="font-bold text-amber-900 text-xs sm:text-sm leading-snug">{ach.title}</p>
                     <p className="text-[11px] text-amber-800 mt-0.5">{ach.event}</p>
@@ -1066,7 +1062,7 @@ export default function ResumePortfolio() {
                   <div className="flex flex-wrap gap-2 pt-2 border-t border-amber-200/50 items-center justify-between">
                     <div className="flex flex-wrap gap-2">
                       {ach.fileUrls?.map((file: any, idx: number) => (
-                        <a key={idx} href={file.url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 px-3 py-2 sm:py-1.5 bg-amber-600 hover:bg-amber-700 text-white font-bold text-[11px] sm:text-[10px] rounded-lg shadow-xs transition">
+                        <a key={idx} href={file.url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 px-3 py-2 sm:py-1.5 bg-amber-600 hover:bg-amber-700 text-white font-bold text-[11px] sm:text-[10px] rounded-lg shadow-xs transition transform hover:scale-105">
                           <FileText className="w-3.5 h-3.5 flex-shrink-0" /> 
                           <span className="break-all">{file.label}</span> 
                           <ExternalLink className="w-3 h-3 flex-shrink-0" />
@@ -1084,8 +1080,8 @@ export default function ResumePortfolio() {
             </div>
           </section>
 
-          {/* 5. ACADEMIC PROJECTS SECTION */}
-          <section className="bg-white/90 backdrop-blur-sm border border-slate-200/80 rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-lg sm:shadow-xl shadow-slate-200/40 transition-all duration-500">
+          {/* 5. ACADEMIC PROJECTS SECTION WITH 3D HOVER ANIMATION */}
+          <section className="bg-white/90 backdrop-blur-sm border border-slate-200/80 rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-lg sm:shadow-xl shadow-slate-200/40 hover:-translate-y-1.5 hover:shadow-2xl transition-all duration-500">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-5 sm:mb-6 pb-3.5 border-b border-slate-100">
               <h2 className="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
                 <FileCheck className="w-5 h-5 text-emerald-600" />
@@ -1150,17 +1146,17 @@ export default function ResumePortfolio() {
                 <div 
                   key={proj.id} 
                   id={proj.id} 
-                  className="border border-slate-200 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-lg bg-white"
+                  className="border border-slate-200 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 bg-white group/card"
                 >
                   <div 
                     onClick={() => setExpandedProj(expandedProj === proj.id ? null : proj.id)}
-                    className="w-full p-3.5 sm:p-4 bg-slate-50/80 hover:bg-slate-100/80 flex items-start sm:items-center justify-between transition-colors cursor-pointer gap-2"
+                    className="w-full p-3.5 sm:p-4 bg-slate-50/80 hover:bg-slate-100/90 flex items-start sm:items-center justify-between transition-colors cursor-pointer gap-2"
                   >
                     <div className="text-left flex-1 pr-2">
                       <span className="text-[10px] font-extrabold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-md inline-block mb-1">
                         {proj.date}
                       </span>
-                      <h3 className="font-bold text-slate-900 text-xs sm:text-base leading-snug">
+                      <h3 className="font-bold text-slate-900 text-xs sm:text-base leading-snug group-hover/card:text-emerald-700 transition-colors">
                         {proj.title}
                       </h3>
                     </div>
@@ -1193,7 +1189,7 @@ export default function ResumePortfolio() {
                           </button>
                         </>
                       )}
-                      <div className="p-1 sm:p-1.5 rounded-full bg-white border border-slate-200 shadow-xs">
+                      <div className="p-1 sm:p-1.5 rounded-full bg-white border border-slate-200 shadow-xs group-hover/card:scale-110 transition-transform">
                         {expandedProj === proj.id ? <ChevronUp className="w-4 h-4 text-emerald-600" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
                       </div>
                     </div>
@@ -1282,7 +1278,7 @@ export default function ResumePortfolio() {
                           <p className="font-bold text-slate-900 mb-2">Project Documents Available:</p>
                           <div className="flex flex-wrap gap-2">
                             {proj.fileUrls.map((file: any, idx: number) => (
-                              <a key={idx} href={file.url} target="_blank" rel="noreferrer" className="px-3 py-2 sm:py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold text-[11px] sm:text-[10px] transition flex items-center gap-1.5 shadow-xs">
+                              <a key={idx} href={file.url} target="_blank" rel="noreferrer" className="px-3 py-2 sm:py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold text-[11px] sm:text-[10px] transition transform hover:scale-105 flex items-center gap-1.5 shadow-xs">
                                 <FileText className="w-3.5 h-3.5 flex-shrink-0" /> 
                                 <span className="break-all">{file.label}</span> 
                                 <ExternalLink className="w-3 h-3 flex-shrink-0" />
@@ -1299,7 +1295,7 @@ export default function ResumePortfolio() {
           </section>
 
           {/* 6. CORE SKILLS */}
-          <section className="bg-white/90 backdrop-blur-sm border border-slate-200/80 rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-lg sm:shadow-xl shadow-slate-200/40 transition-all duration-500">
+          <section className="bg-white/90 backdrop-blur-sm border border-slate-200/80 rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-lg sm:shadow-xl shadow-slate-200/40 hover:-translate-y-1.5 hover:shadow-2xl transition-all duration-500">
             <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
               <h2 className="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
                 <ShieldCheck className="w-5 h-5 text-emerald-600" /> Core Competencies & Skills
@@ -1329,7 +1325,7 @@ export default function ResumePortfolio() {
               {skills.map((sk, idx) => (
                 <div
                   key={idx}
-                  className="group relative text-[11px] sm:text-xs px-3 py-1.5 sm:px-3.5 sm:py-2 bg-slate-100 hover:bg-emerald-50 text-slate-700 hover:text-emerald-900 font-semibold rounded-xl border border-slate-200 transition-all duration-300 flex items-center gap-1.5 shadow-xs"
+                  className="group relative text-[11px] sm:text-xs px-3 py-1.5 sm:px-3.5 sm:py-2 bg-slate-100 hover:bg-emerald-50 text-slate-700 hover:text-emerald-900 font-semibold rounded-xl border border-slate-200 transition-all duration-300 transform hover:scale-105 flex items-center gap-1.5 shadow-xs"
                 >
                   <span>{sk}</span>
                   {isDevActive && (
