@@ -34,7 +34,7 @@ import {
 } from "lucide-react";
 
 const DEVELOPER_EMAIL = "ibnusenamhmd@gmail.com";
-const PORTFOLIO_DOC_ID = "main_portfolio_data"; // ID dokumen di Firestore
+const PORTFOLIO_DOC_ID = "main_portfolio_data";
 
 export default function ResumePortfolio() {
   const [currentUser, setCurrentUser] = useState<any>(null);
@@ -51,8 +51,8 @@ export default function ResumePortfolio() {
     email: "ibnusenamhmd@gmail.com",
     phone: "6285814409513",
     location: "South Jakarta, DKI Jakarta, Indonesia",
-    photoUrl: "/docs/Sena.png", 
-    cvUrl: "/docs/CV_MIS.pdf",
+    photoUrl: "/docs/Sena.jpg", 
+    cvUrl: "/docs/CV_Muhammad_Ibnu_Sena.pdf",
   });
   const [draftProfile, setDraftProfile] = useState({ ...portfolioData });
 
@@ -71,7 +71,7 @@ export default function ResumePortfolio() {
       id: "exp_bpjph",
       title: "SJPH Verification Specialist - Self-Declare Halal Certification",
       company: "Halal Product Assurance Organizing Agency (BPJPH)",
-      period: "Aug 2025 - Dec 2025 (4 months)",
+      period: "Aug 2025 - Dec 2025 (4 mos)",
       desc: "Verified 5,500+ halal certification applications under the Self-Declare scheme by evaluating business profiles, raw materials, production processes, and supporting SJPH documentation.",
       fileUrls: [{ label: "BPJPH Document", url: "/docs/BPJPH_MIS.pdf" }],
     },
@@ -87,7 +87,7 @@ export default function ResumePortfolio() {
       id: "exp_lab",
       title: "Laboratory Assistant - Food Technology Practicums",
       company: "Al-Azhar Indonesia University",
-      period: "Sep 2023 - Jul 2026 (2 years 10 months)",
+      period: "Sep 2023 - Jul 2026 (2 yrs 10 mos)",
       desc: "Supported practicum sessions across 4 major Food Technology courses: Chemistry, Food Component Metabolism, Unit Operations 1, and Unit Operations 2. Guided students, maintained safety compliance, and issued lab reports.",
       fileUrls: [
         { label: "Chemistry Lab 1", url: "/docs/CHEM_MIS.pdf" },
@@ -101,7 +101,7 @@ export default function ResumePortfolio() {
       id: "exp_hrd",
       title: "Head of Human Resources and Development (HIMTEPA)",
       company: "Al-Azhar Indonesia University",
-      period: "May 2024 - Apr 2025 (11 months)",
+      period: "May 2024 - Apr 2025 (11 mos)",
       desc: "Coordinated a team in planning and executing student development programs, leadership training, member evaluation, and student coordination.",
       fileUrls: [{ label: "HIMTEPA Document", url: "/docs/HIMTEPA_MIS.pdf" }],
     }
@@ -169,6 +169,7 @@ export default function ResumePortfolio() {
       desc: "Developed a comprehensive SJPH manual, supporting audit documentation, and conducted simulated halal audits for food business certification.",
       badge: "Certificate No: ID31410022876950625",
       fileUrls: [
+        { label: "Halal Document", url: "/docs/BPJPH_MIS.pdf" },
         { label: "Sertifikat Halal (SH_YP)", url: "/docs/SH_YP.pdf" }
       ],
     },
@@ -179,6 +180,7 @@ export default function ResumePortfolio() {
       desc: "Drafted a complete HACCP system manual for a simulated food industry model, including hazard analysis and critical control point (CCP) limits.",
       badge: "HACCP System Manual",
       fileUrls: [
+        { label: "HACCP Manual", url: "/docs/HACCP_MIS.pdf" },
         { label: "HACCP Project File", url: "/docs/HACCP_PROJECT.pdf" }
       ],
     },
@@ -192,6 +194,7 @@ export default function ResumePortfolio() {
         { label: "CPPOB Project", url: "/docs/CPPOB_PROJECT.pdf" },
         { label: "SSOP Project", url: "/docs/SSOP_PROJECT.pdf" },
         { label: "Audit GMP", url: "/docs/AUDIT_GMP.pdf" },
+        { label: "GMP Manual", url: "/docs/GMP_MIS.pdf" }
       ],
     }
   ]);
@@ -252,7 +255,7 @@ export default function ResumePortfolio() {
     return () => unsubscribe();
   }, []);
 
-  // Helper function to save all states to Firestore
+  // Helper function to save all states to Firestore safely
   const saveToFirestore = async (updatedData: {
     portfolioData?: any;
     education?: any;
@@ -277,9 +280,9 @@ export default function ResumePortfolio() {
 
       await setDoc(doc(db, "portfolios", PORTFOLIO_DOC_ID), payload, { merge: true });
       console.log("Successfully saved to Firestore!");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error saving to Firestore:", error);
-      alert("Failed to save changes to Cloud Database.");
+      alert(`Gagal menyimpan ke Database: ${error.message || "Pastikan Anda sudah login sebagai developer dan Firestore Rules sudah diatur."}`);
     }
   };
 
@@ -499,7 +502,7 @@ export default function ResumePortfolio() {
                 <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
                   {portfolioData.name}
                 </h1>
-                <p className="mt-2 text-slate-600 text-xs sm:text-sm leading-relaxed max-w-xl mx-auto sm:mx-0">
+                <p className="mt-2 text-slate-600 text-xs sm:text-sm leading-relaxed text-justify max-w-xl mx-auto sm:mx-0">
                   {portfolioData.description}
                 </p>
               </div>
@@ -700,7 +703,7 @@ export default function ResumePortfolio() {
               <p className="text-xs text-slate-600 font-medium">{education.university} • {education.gpa}</p>
               <p className="text-[11px] text-slate-400">{education.period}</p>
               <p className="text-[11px] text-slate-700 font-semibold mt-2">Relevant Coursework:</p>
-              <p className="text-[11px] text-slate-500 leading-relaxed">{education.courses}</p>
+              <p className="text-[11px] text-slate-500 leading-relaxed text-justify">{education.courses}</p>
             </div>
           </section>
 
@@ -867,7 +870,7 @@ export default function ResumePortfolio() {
 
                   <div className={`transition-all duration-300 ease-in-out overflow-hidden ${expandedExp === exp.id ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"}`}>
                     <div className="p-4 sm:p-5 bg-white border-t border-slate-100 text-xs text-slate-600 space-y-3 leading-relaxed border-l-4 border-l-emerald-500">
-                      <p className="font-medium text-slate-700">{exp.desc}</p>
+                      <p className="font-medium text-slate-700 text-justify">{exp.desc}</p>
 
                       {exp.fileUrls && exp.fileUrls.length > 0 && (
                         <div className="pt-2">
@@ -941,7 +944,7 @@ export default function ResumePortfolio() {
               {trainings.map(tr => (
                 <div key={tr.id} className="p-3.5 sm:p-4 bg-slate-50 rounded-2xl border border-slate-200/70 text-xs space-y-2 hover:border-emerald-300 hover:shadow-md transition">
                   <div>
-                    <p className="font-bold text-slate-900 text-xs sm:text-sm leading-snug">{tr.title}</p>
+                    <p className="font-bold text-slate-900 text-xs sm:text-sm leading-snug text-justify">{tr.title}</p>
                     <p className="text-[11px] text-slate-500 font-medium mt-0.5">{tr.organizer} • {tr.date}</p>
                   </div>
                   <div className="flex flex-wrap gap-2 pt-2 border-t border-slate-200/60">
@@ -994,8 +997,8 @@ export default function ResumePortfolio() {
               {achievements.map((ach) => (
                 <div key={ach.id} className="p-3.5 sm:p-4 bg-amber-50/60 border border-amber-200/70 rounded-2xl text-xs shadow-xs space-y-3 relative hover:shadow-md transition">
                   <div>
-                    <p className="font-bold text-amber-900 text-xs sm:text-sm leading-snug">{ach.title}</p>
-                    <p className="text-[11px] text-amber-800 mt-0.5">{ach.event}</p>
+                    <p className="font-bold text-amber-900 text-xs sm:text-sm leading-snug text-justify">{ach.title}</p>
+                    <p className="text-[11px] text-amber-800 mt-0.5 text-justify">{ach.event}</p>
                     <p className="text-[10px] text-slate-400 mt-1">{ach.date}</p>
                   </div>
                   <div className="flex flex-wrap gap-2 pt-2 border-t border-amber-200/50 items-center justify-between">
@@ -1067,7 +1070,7 @@ export default function ResumePortfolio() {
                       <span className="text-[10px] font-extrabold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-md inline-block mb-1">
                         {proj.date}
                       </span>
-                      <h3 className="font-bold text-slate-900 text-xs sm:text-base leading-snug group-hover/card:text-emerald-700 transition-colors">
+                      <h3 className="font-bold text-slate-900 text-xs sm:text-base leading-snug group-hover/card:text-emerald-700 transition-colors text-justify">
                         {proj.title}
                       </h3>
                     </div>
@@ -1092,7 +1095,7 @@ export default function ResumePortfolio() {
 
                   <div className={`transition-all duration-300 ease-in-out overflow-hidden ${expandedProj === proj.id ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"}`}>
                     <div className="p-4 sm:p-5 bg-white border-t border-slate-100 text-xs text-slate-600 space-y-3 leading-relaxed border-l-4 border-l-emerald-500">
-                      <p className="font-medium text-slate-700">{proj.desc}</p>
+                      <p className="font-medium text-slate-700 text-justify">{proj.desc}</p>
                       {proj.badge && (
                         <div className="p-3 sm:p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1 sm:gap-2">
                           <span className="font-bold text-emerald-900 text-[11px] sm:text-xs">Project Tag / Status</span>
