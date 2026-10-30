@@ -48,7 +48,7 @@ export default function ResumePortfolio() {
     email: "ibnusenamhmd@gmail.com",
     phone: "6285814409513",
     location: "South Jakarta, DKI Jakarta, Indonesia",
-    photoUrl: "/docs/Sena.png", 
+    photoUrl: "/docs/Sena.jpg", 
   });
   const [draftProfile, setDraftProfile] = useState({ ...portfolioData });
 
@@ -156,7 +156,7 @@ export default function ResumePortfolio() {
   const [newAch, setNewAch] = useState({ title: "", event: "", date: "", files: [{ label: "", url: "" }] });
   const [draftAchievements, setDraftAchievements] = useState<any[]>([]);
 
-  // 5. ACADEMIC PROJECTS STATE (Dengan SH_YP, HACCP_PROJECT, CPPOB_PROJECT, SSOP_PROJECT, AUDIT_GMP)
+  // 5. ACADEMIC PROJECTS STATE
   const [projects, setProjects] = useState([
     {
       id: "proj_halal",
@@ -211,11 +211,9 @@ export default function ResumePortfolio() {
 
   const [editingSection, setEditingSection] = useState<string | null>(null);
 
-  // Accordion state eksklusif berdasarkan klik (auto-close saat klik lain)
+  // Accordion state eksklusif berbasis klik
   const [expandedExp, setExpandedExp] = useState<string | null>("exp_bpjph");
   const [expandedProj, setExpandedProj] = useState<string | null>("proj_halal");
-  const [expandedTrain, setExpandedTrain] = useState<string | null>("tr_1");
-  const [expandedAch, setExpandedAch] = useState<string | null>("ach_1");
 
   useEffect(() => {
     setCurrentYear(new Date().getFullYear());
@@ -371,35 +369,34 @@ export default function ResumePortfolio() {
   const isDevActive = isDevMode && currentUser && currentUser.email === DEVELOPER_EMAIL;
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 font-sans antialiased selection:bg-emerald-500 selection:text-white pb-28 relative overflow-hidden">
+    <div className="min-h-screen bg-slate-50 text-slate-800 font-sans antialiased selection:bg-emerald-500 selection:text-white pb-24 sm:pb-28 relative overflow-x-hidden">
       
       {/* 🌟 ENHANCED BACKGROUND DECORATIVE SHAPES & GRADIENTS */}
-      <div className="absolute top-0 left-0 w-full h-[600px] bg-gradient-to-br from-emerald-100/80 via-teal-50/50 to-indigo-100/40 pointer-events-none -z-10" />
-      <div className="absolute top-32 -left-32 w-96 h-96 bg-emerald-300/25 rounded-full blur-[100px] pointer-events-none -z-10 animate-pulse" />
-      <div className="absolute top-[450px] -right-32 w-[450px] h-[450px] bg-teal-300/20 rounded-full blur-[120px] pointer-events-none -z-10" />
-      <div className="absolute bottom-40 left-1/4 w-80 h-80 bg-indigo-200/25 rounded-full blur-[90px] pointer-events-none -z-10" />
+      <div className="absolute top-0 left-0 w-full h-[500px] sm:h-[600px] bg-gradient-to-br from-emerald-100/80 via-teal-50/50 to-indigo-100/40 pointer-events-none -z-10" />
+      <div className="absolute top-20 -left-28 sm:-left-32 w-72 sm:w-96 h-72 sm:h-96 bg-emerald-300/25 rounded-full blur-[80px] sm:blur-[100px] pointer-events-none -z-10 animate-pulse" />
+      <div className="absolute top-[350px] sm:top-[450px] -right-28 sm:-right-32 w-72 sm:w-[450px] h-72 sm:h-[450px] bg-teal-300/20 rounded-full blur-[90px] sm:blur-[120px] pointer-events-none -z-10" />
 
-      <div className="h-2.5 bg-gradient-to-r from-emerald-600 via-teal-500 to-indigo-600 sticky top-0 z-50 shadow-md" />
+      <div className="h-2 bg-gradient-to-r from-emerald-600 via-teal-500 to-indigo-600 sticky top-0 z-50 shadow-md" />
 
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 relative z-10">
+      <main className="max-w-4xl mx-auto px-3.5 sm:px-6 lg:px-8 pt-5 sm:pt-8 relative z-10">
         
         {/* HEADER / PROFILE HERO */}
-        <header className="bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-3xl p-6 sm:p-8 shadow-xl shadow-slate-200/50 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:rotate-[0.3deg] relative overflow-hidden mb-8 group">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative z-10">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5 w-full">
-              <div className="w-22 h-22 sm:w-28 sm:h-28 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-700 p-1 shadow-lg shadow-emerald-500/20 flex-shrink-0 group-hover:scale-105 transition-transform duration-300">
+        <header className="bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-lg sm:shadow-xl shadow-slate-200/50 transition-all duration-500 relative overflow-hidden mb-6 sm:mb-8">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-5 sm:gap-6 relative z-10">
+            <div className="flex flex-col sm:flex-row items-center sm:items-center gap-4 sm:gap-5 w-full text-center sm:text-left">
+              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-700 p-1 shadow-lg shadow-emerald-500/20 flex-shrink-0">
                 <div className="w-full h-full bg-slate-50 rounded-[14px] flex items-center justify-center overflow-hidden">
                   {portfolioData.photoUrl ? (
                     <img src={portfolioData.photoUrl} alt={portfolioData.name} className="w-full h-full object-cover" />
                   ) : (
-                    <UserCheck className="w-12 h-12 text-emerald-600" />
+                    <UserCheck className="w-10 h-10 text-emerald-600" />
                   )}
                 </div>
               </div>
 
-              <div className="flex-1">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold shadow-xs">
+              <div className="flex-1 w-full">
+                <div className="flex flex-wrap items-center justify-center sm:justify-between gap-2 mb-2">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-[11px] sm:text-xs font-bold shadow-xs">
                     <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
                     {portfolioData.title}
                   </div>
@@ -413,7 +410,7 @@ export default function ResumePortfolio() {
                           setEditingSection("profile");
                         }
                       }}
-                      className="px-3 py-1 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-lg text-xs flex items-center gap-1 shadow-xs transition cursor-pointer"
+                      className="px-2.5 py-1 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-lg text-xs flex items-center gap-1 shadow-xs transition cursor-pointer"
                     >
                       <Edit2 className="w-3.5 h-3.5" /> {editingSection === "profile" ? "Cancel" : "Edit Profile"}
                     </button>
@@ -423,25 +420,25 @@ export default function ResumePortfolio() {
                 <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
                   {portfolioData.name}
                 </h1>
-                <p className="mt-2 text-slate-600 text-xs sm:text-sm max-w-xl leading-relaxed">
+                <p className="mt-2 text-slate-600 text-xs sm:text-sm leading-relaxed max-w-xl mx-auto sm:mx-0">
                   {portfolioData.description}
                 </p>
               </div>
             </div>
 
-            {/* KONTAK: Langsung ke Email & WhatsApp */}
+            {/* KONTAK */}
             <div className="flex flex-col gap-2 w-full md:w-auto text-xs">
-              <a href={`mailto:${portfolioData.email}`} className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-slate-50 hover:bg-emerald-50 border border-slate-200 transition-all text-slate-700 font-medium">
-                <Mail className="w-4 h-4 text-emerald-600" />
+              <a href={`mailto:${portfolioData.email}`} className="flex items-center justify-center sm:justify-start gap-2 px-3.5 py-2.5 rounded-xl bg-slate-50 hover:bg-emerald-50 border border-slate-200 transition-all text-slate-700 font-medium break-all">
+                <Mail className="w-4 h-4 text-emerald-600 flex-shrink-0" />
                 <span>{portfolioData.email}</span>
               </a>
-              <a href={`https://wa.me/${portfolioData.phone}`} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-slate-50 hover:bg-emerald-50 border border-slate-200 transition-all text-slate-700 font-medium">
-                <Phone className="w-4 h-4 text-emerald-600" />
+              <a href={`https://wa.me/${portfolioData.phone}`} target="_blank" rel="noreferrer" className="flex items-center justify-center sm:justify-start gap-2 px-3.5 py-2.5 rounded-xl bg-slate-50 hover:bg-emerald-50 border border-slate-200 transition-all text-slate-700 font-medium">
+                <Phone className="w-4 h-4 text-emerald-600 flex-shrink-0" />
                 <span>+{portfolioData.phone} (WhatsApp)</span>
               </a>
-              <div className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-600">
-                <MapPin className="w-4 h-4 text-emerald-600" />
-                <span>{portfolioData.location}</span>
+              <div className="flex items-center justify-center sm:justify-start gap-2 px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-600">
+                <MapPin className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                <span className="text-center sm:text-left">{portfolioData.location}</span>
               </div>
             </div>
           </div>
@@ -473,7 +470,7 @@ export default function ResumePortfolio() {
                   <input type="text" value={draftProfile.location} onChange={(e) => setDraftProfile({ ...draftProfile, location: e.target.value })} className="w-full p-2 bg-white rounded-lg border border-amber-300" />
                 </div>
                 <div>
-                  <label className="block font-semibold mb-1">Profile Photo Path (/docs/foto.jpg):</label>
+                  <label className="block font-semibold mb-1">Profile Photo Path (/docs/Sena.jpg):</label>
                   <input type="text" value={draftProfile.photoUrl} onChange={(e) => setDraftProfile({ ...draftProfile, photoUrl: e.target.value })} className="w-full p-2 bg-white rounded-lg border border-amber-300" placeholder="/docs/filename.jpg" />
                 </div>
               </div>
@@ -503,40 +500,40 @@ export default function ResumePortfolio() {
           )}
         </header>
 
-        {/* HERO STATS WITH 3D TILT */}
-        <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div onClick={() => scrollToCard("exp_bpjph", 'exp')} className="bg-white/90 backdrop-blur-sm border border-slate-200/80 p-4 rounded-2xl shadow-md hover:shadow-2xl hover:-translate-y-2 hover:-rotate-1 transition-all duration-300 cursor-pointer group">
-            <p className="text-2xl sm:text-3xl font-extrabold text-emerald-600 group-hover:scale-110 transition-transform">5,500+</p>
+        {/* HERO STATS */}
+        <section className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
+          <div onClick={() => scrollToCard("exp_bpjph", 'exp')} className="bg-white/90 backdrop-blur-sm border border-slate-200/80 p-3.5 sm:p-4 rounded-2xl shadow-sm sm:shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer group">
+            <p className="text-2xl sm:text-3xl font-extrabold text-emerald-600">5,500+</p>
             <p className="text-[11px] text-slate-500 mt-1 font-medium flex items-center justify-between">
-              SJPH Verification <ArrowRight className="w-3 h-3 text-emerald-600 opacity-0 group-hover:opacity-100 transition" />
+              SJPH Verification <ArrowRight className="w-3 h-3 text-emerald-600" />
             </p>
           </div>
-          <div onClick={() => scrollToCard("exp_bem", 'exp')} className="bg-white/90 backdrop-blur-sm border border-slate-200/80 p-4 rounded-2xl shadow-md hover:shadow-2xl hover:-translate-y-2 hover:rotate-1 transition-all duration-300 cursor-pointer group">
-            <p className="text-2xl sm:text-3xl font-extrabold text-indigo-600 group-hover:scale-110 transition-transform">450+</p>
+          <div onClick={() => scrollToCard("exp_bem", 'exp')} className="bg-white/90 backdrop-blur-sm border border-slate-200/80 p-3.5 sm:p-4 rounded-2xl shadow-sm sm:shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer group">
+            <p className="text-2xl sm:text-3xl font-extrabold text-indigo-600">450+</p>
             <p className="text-[11px] text-slate-500 mt-1 font-medium flex items-center justify-between">
-              BEM Files & Letters <ArrowRight className="w-3 h-3 text-indigo-600 opacity-0 group-hover:opacity-100 transition" />
+              BEM Files & Letters <ArrowRight className="w-3 h-3 text-indigo-600" />
             </p>
           </div>
-          <div onClick={() => scrollToCard("exp_lab", 'exp')} className="bg-white/90 backdrop-blur-sm border border-slate-200/80 p-4 rounded-2xl shadow-md hover:shadow-2xl hover:-translate-y-2 hover:-rotate-1 transition-all duration-300 cursor-pointer group">
-            <p className="text-2xl sm:text-3xl font-extrabold text-amber-600 group-hover:scale-110 transition-transform">4 Courses</p>
+          <div onClick={() => scrollToCard("exp_lab", 'exp')} className="bg-white/90 backdrop-blur-sm border border-slate-200/80 p-3.5 sm:p-4 rounded-2xl shadow-sm sm:shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer group">
+            <p className="text-2xl sm:text-3xl font-extrabold text-amber-600">4 Courses</p>
             <p className="text-[11px] text-slate-500 mt-1 font-medium flex items-center justify-between">
-              Lab Assistant <ArrowRight className="w-3 h-3 text-amber-600 opacity-0 group-hover:opacity-100 transition" />
+              Lab Assistant <ArrowRight className="w-3 h-3 text-amber-600" />
             </p>
           </div>
-          <div onClick={() => scrollToCard("proj_halal", 'proj')} className="bg-white/90 backdrop-blur-sm border border-slate-200/80 p-4 rounded-2xl shadow-md hover:shadow-2xl hover:-translate-y-2 hover:rotate-1 transition-all duration-300 cursor-pointer group">
-            <p className="text-2xl sm:text-3xl font-extrabold text-teal-600 group-hover:scale-110 transition-transform">3.57</p>
+          <div onClick={() => scrollToCard("proj_halal", 'proj')} className="bg-white/90 backdrop-blur-sm border border-slate-200/80 p-3.5 sm:p-4 rounded-2xl shadow-sm sm:shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer group">
+            <p className="text-2xl sm:text-3xl font-extrabold text-teal-600">3.57</p>
             <p className="text-[11px] text-slate-500 mt-1 font-medium flex items-center justify-between">
-              Bachelor's GPA <ArrowRight className="w-3 h-3 text-teal-600 opacity-0 group-hover:opacity-100 transition" />
+              Bachelor's GPA <ArrowRight className="w-3 h-3 text-teal-600" />
             </p>
           </div>
         </section>
 
-        <div className="space-y-8">
+        <div className="space-y-6 sm:space-y-8">
 
           {/* 1. EDUCATION SECTION */}
-          <section className="bg-white/90 backdrop-blur-sm border border-slate-200/80 rounded-3xl p-6 sm:p-8 shadow-xl shadow-slate-200/40 hover:-translate-y-1.5 hover:shadow-2xl transition-all duration-500">
+          <section className="bg-white/90 backdrop-blur-sm border border-slate-200/80 rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-lg sm:shadow-xl shadow-slate-200/40 transition-all duration-500">
             <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
-              <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2.5">
+              <h2 className="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
                 <GraduationCap className="w-5 h-5 text-emerald-600" /> Education
               </h2>
               {isDevActive && (
@@ -549,9 +546,9 @@ export default function ResumePortfolio() {
                       setEditingSection("edu");
                     }
                   }}
-                  className="px-3 py-1 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-lg text-xs flex items-center gap-1 shadow-xs transition cursor-pointer"
+                  className="px-2.5 py-1 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-lg text-xs flex items-center gap-1 transition cursor-pointer"
                 >
-                  <Edit2 className="w-3.5 h-3.5" /> {editingSection === "edu" ? "Cancel" : "Edit Education"}
+                  <Edit2 className="w-3.5 h-3.5" /> {editingSection === "edu" ? "Cancel" : "Edit"}
                 </button>
               )}
             </div>
@@ -603,24 +600,24 @@ export default function ResumePortfolio() {
               </div>
             )}
 
-            <div className="border-l-2 border-emerald-500 pl-4 space-y-1">
+            <div className="border-l-2 border-emerald-500 pl-3.5 sm:pl-4 space-y-1">
               <h3 className="font-bold text-slate-900 text-sm sm:text-base">{education.degree}</h3>
               <p className="text-xs text-slate-600 font-medium">{education.university} • {education.gpa}</p>
               <p className="text-[11px] text-slate-400">{education.period}</p>
               <p className="text-[11px] text-slate-700 font-semibold mt-2">Relevant Coursework:</p>
-              <p className="text-[11px] text-slate-500">{education.courses}</p>
+              <p className="text-[11px] text-slate-500 leading-relaxed">{education.courses}</p>
             </div>
           </section>
 
-          {/* 2. EXPERIENCE SECTION (CLICK ACCORDION & AUTO-CLOSE) */}
-          <section className="bg-white/90 backdrop-blur-sm border border-slate-200/80 rounded-3xl p-6 sm:p-8 shadow-xl shadow-slate-200/40 hover:-translate-y-1.5 hover:shadow-2xl transition-all duration-500">
-            <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-100">
-              <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2.5">
+          {/* 2. EXPERIENCE SECTION */}
+          <section className="bg-white/90 backdrop-blur-sm border border-slate-200/80 rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-lg sm:shadow-xl shadow-slate-200/40 transition-all duration-500">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-5 sm:mb-6 pb-3.5 border-b border-slate-100">
+              <h2 className="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
                 <Briefcase className="w-5 h-5 text-emerald-600" />
                 Work & Organizational Experience
               </h2>
-              <div className="flex items-center gap-2">
-                <span className="text-[11px] font-medium text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full hidden sm:inline">
+              <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
+                <span className="text-[11px] font-medium text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">
                   Click for Details
                 </span>
                 {isDevActive && (
@@ -628,7 +625,7 @@ export default function ResumePortfolio() {
                     onClick={() => setShowAddExpForm(!showAddExpForm)}
                     className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center gap-1 shadow-xs transition cursor-pointer"
                   >
-                    <PlusCircle className="w-4 h-4" /> {showAddExpForm ? "Close Form" : "+ Add Item"}
+                    <PlusCircle className="w-4 h-4" /> {showAddExpForm ? "Close" : "+ Add"}
                   </button>
                 )}
               </div>
@@ -647,7 +644,7 @@ export default function ResumePortfolio() {
                 <div className="space-y-2 pt-2 border-t border-emerald-200">
                   <p className="font-bold text-emerald-900">Public Docs Files:</p>
                   {newExp.files.map((file, idx) => (
-                    <div key={idx} className="flex items-center gap-2">
+                    <div key={idx} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                       <input type="text" placeholder="Label" value={file.label} onChange={(e) => {
                         const updated = [...newExp.files];
                         updated[idx].label = e.target.value;
@@ -658,7 +655,7 @@ export default function ResumePortfolio() {
                         updated[idx].url = e.target.value;
                         setNewExp({ ...newExp, files: updated });
                       }} className="p-1.5 bg-white rounded-lg border border-emerald-300 flex-1" />
-                      <button onClick={() => setNewExp({ ...newExp, files: newExp.files.filter((_, i) => i !== idx) })} className="p-1 bg-rose-500 text-white rounded"><Trash2 className="w-3.5 h-3.5" /></button>
+                      <button onClick={() => setNewExp({ ...newExp, files: newExp.files.filter((_, i) => i !== idx) })} className="p-1.5 bg-rose-500 text-white rounded flex items-center justify-center"><Trash2 className="w-3.5 h-3.5" /></button>
                     </div>
                   ))}
                   <button onClick={() => setNewExp({ ...newExp, files: [...newExp.files, { label: "", url: "" }] })} className="px-2.5 py-1 bg-emerald-700 text-white text-[10px] font-bold rounded flex items-center gap-1">
@@ -673,28 +670,28 @@ export default function ResumePortfolio() {
               </div>
             )}
 
-            <div className="space-y-4">
+            <div className="space-y-3.5 sm:space-y-4">
               {experiences.map((exp) => (
                 <div 
                   key={exp.id} 
                   id={exp.id} 
-                  className="border border-slate-200 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 scroll-mt-24 bg-white"
+                  className="border border-slate-200 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-lg bg-white"
                 >
                   <div 
                     onClick={() => setExpandedExp(expandedExp === exp.id ? null : exp.id)}
-                    className="w-full p-4 bg-slate-50/80 hover:bg-slate-100/80 flex items-center justify-between transition-colors cursor-pointer"
+                    className="w-full p-3.5 sm:p-4 bg-slate-50/80 hover:bg-slate-100/80 flex items-start sm:items-center justify-between transition-colors cursor-pointer gap-2"
                   >
-                    <div className="text-left flex-1 pr-4">
-                      <span className="text-[10px] font-extrabold text-emerald-700 uppercase tracking-wider bg-emerald-100/80 px-2 py-0.5 rounded-md">
+                    <div className="text-left flex-1 pr-2">
+                      <span className="text-[10px] font-extrabold text-emerald-700 uppercase tracking-wider bg-emerald-100/80 px-2 py-0.5 rounded-md inline-block mb-1">
                         {exp.period}
                       </span>
-                      <h3 className="font-bold text-slate-900 text-sm sm:text-base mt-1">
+                      <h3 className="font-bold text-slate-900 text-xs sm:text-base leading-snug">
                         {exp.title}
                       </h3>
-                      <p className="text-xs text-slate-500 font-medium">{exp.company}</p>
+                      <p className="text-[11px] sm:text-xs text-slate-500 font-medium mt-0.5">{exp.company}</p>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
                       {isDevActive && (
                         <>
                           <button
@@ -707,23 +704,22 @@ export default function ResumePortfolio() {
                                 setEditingSection(exp.id);
                               }
                             }}
-                            className="px-2.5 py-1 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-lg text-[10px] flex items-center gap-1 shadow-xs transition cursor-pointer"
+                            className="px-2 py-1 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-lg text-[10px] flex items-center gap-1 shadow-xs cursor-pointer"
                           >
-                            <Edit2 className="w-3 h-3" /> {editingSection === exp.id ? "Cancel" : "Edit"}
+                            <Edit2 className="w-3 h-3" />
                           </button>
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
                               handleRemoveExperience(exp.id);
                             }}
-                            className="p-1.5 bg-rose-100 hover:bg-rose-500 text-rose-600 hover:text-white rounded-lg transition-all duration-200 cursor-pointer shadow-xs group/trash"
-                            title="Move to trash (Remove sub-point)"
+                            className="p-1 bg-rose-100 hover:bg-rose-500 text-rose-600 hover:text-white rounded-lg transition-all cursor-pointer"
                           >
-                            <Trash2 className="w-3.5 h-3.5 transition-transform group-hover/trash:scale-110" />
+                            <Trash2 className="w-3.5 h-3.5" />
                           </button>
                         </>
                       )}
-                      <div className="p-1.5 rounded-full bg-white border border-slate-200 shadow-xs">
+                      <div className="p-1 sm:p-1.5 rounded-full bg-white border border-slate-200 shadow-xs">
                         {expandedExp === exp.id ? <ChevronUp className="w-4 h-4 text-emerald-600" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
                       </div>
                     </div>
@@ -754,21 +750,21 @@ export default function ResumePortfolio() {
                       <div className="space-y-2 pt-2 border-t border-amber-200">
                         <p className="font-bold text-amber-900">Manage Documents:</p>
                         {draftExperience?.fileUrls?.map((file: any, fIdx: number) => (
-                          <div key={fIdx} className="flex items-center gap-2">
+                          <div key={fIdx} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                             <input type="text" value={file.label} onChange={(e) => {
                               const updated = [...draftExperience.fileUrls];
                               updated[fIdx].label = e.target.value;
                               setDraftExperience({ ...draftExperience, fileUrls: updated });
-                            }} className="p-1 bg-white rounded border border-amber-300 flex-1" placeholder="Label" />
+                            }} className="p-1.5 bg-white rounded border border-amber-300 flex-1" placeholder="Label" />
                             <input type="text" value={file.url} onChange={(e) => {
                               const updated = [...draftExperience.fileUrls];
                               updated[fIdx].url = e.target.value;
                               setDraftExperience({ ...draftExperience, fileUrls: updated });
-                            }} className="p-1 bg-white rounded border border-amber-300 flex-1" placeholder="Path (/docs/...)" />
+                            }} className="p-1.5 bg-white rounded border border-amber-300 flex-1" placeholder="Path (/docs/...)" />
                             <button onClick={() => {
                               const updated = draftExperience.fileUrls.filter((_: any, i: number) => i !== fIdx);
                               setDraftExperience({ ...draftExperience, fileUrls: updated });
-                            }} className="p-1 bg-rose-500 text-white rounded"><Trash2 className="w-3 h-3" /></button>
+                            }} className="p-1 bg-rose-500 text-white rounded flex items-center justify-center"><Trash2 className="w-3.5 h-3.5" /></button>
                           </div>
                         ))}
                         <button onClick={() => setDraftExperience({ ...draftExperience, fileUrls: [...(draftExperience?.fileUrls || []), { label: "", url: "" }] })} className="px-2 py-1 bg-amber-700 text-white text-[10px] rounded flex items-center gap-1">
@@ -797,8 +793,8 @@ export default function ResumePortfolio() {
                     </div>
                   )}
 
-                  <div className={`transition-all duration-300 ease-in-out overflow-hidden ${expandedExp === exp.id ? "max-h-[800px] opacity-100" : "max-h-0 opacity-0"}`}>
-                    <div className="p-5 bg-white border-t border-slate-100 text-xs text-slate-600 space-y-3 leading-relaxed border-l-4 border-l-emerald-500">
+                  <div className={`transition-all duration-300 ease-in-out overflow-hidden ${expandedExp === exp.id ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"}`}>
+                    <div className="p-4 sm:p-5 bg-white border-t border-slate-100 text-xs text-slate-600 space-y-3 leading-relaxed border-l-4 border-l-emerald-500">
                       <p className="font-medium text-slate-700">{exp.desc}</p>
 
                       {exp.fileUrls && exp.fileUrls.length > 0 && (
@@ -806,8 +802,10 @@ export default function ResumePortfolio() {
                           <p className="font-bold text-slate-900 mb-2">Attached Documents / Proofs:</p>
                           <div className="flex flex-wrap gap-2">
                             {exp.fileUrls.map((file: any, idx: number) => (
-                              <a key={idx} href={file.url} target="_blank" rel="noreferrer" className="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-lg font-bold text-[10px] transition flex items-center gap-1 shadow-xs">
-                                <FileText className="w-3 h-3 text-emerald-600" /> {file.label} <ExternalLink className="w-2.5 h-2.5" />
+                              <a key={idx} href={file.url} target="_blank" rel="noreferrer" className="px-3 py-2 sm:py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-lg font-bold text-[11px] sm:text-[10px] transition flex items-center gap-1.5 shadow-xs">
+                                <FileText className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" /> 
+                                <span className="break-all">{file.label}</span> 
+                                <ExternalLink className="w-3 h-3 flex-shrink-0" />
                               </a>
                             ))}
                           </div>
@@ -821,9 +819,9 @@ export default function ResumePortfolio() {
           </section>
 
           {/* 3. PROFESSIONAL TRAINING */}
-          <section className="bg-white/90 backdrop-blur-sm border border-slate-200/80 rounded-3xl p-6 sm:p-8 shadow-xl shadow-slate-200/40 hover:-translate-y-1.5 hover:shadow-2xl transition-all duration-500">
+          <section className="bg-white/90 backdrop-blur-sm border border-slate-200/80 rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-lg sm:shadow-xl shadow-slate-200/40 transition-all duration-500">
             <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
-              <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2.5">
+              <h2 className="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
                 <Award className="w-5 h-5 text-emerald-600" /> Professional Training & Certifications
               </h2>
               {isDevActive && (
@@ -836,9 +834,9 @@ export default function ResumePortfolio() {
                       setEditingSection("train");
                     }
                   }}
-                  className="px-3 py-1 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-lg text-xs flex items-center gap-1 transition cursor-pointer shadow-xs"
+                  className="px-2.5 py-1 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-lg text-xs flex items-center gap-1 transition cursor-pointer shadow-xs"
                 >
-                  <Edit2 className="w-3.5 h-3.5" /> {editingSection === "train" ? "Cancel" : "Edit Training"}
+                  <Edit2 className="w-3.5 h-3.5" /> {editingSection === "train" ? "Cancel" : "Edit"}
                 </button>
               )}
             </div>
@@ -858,7 +856,7 @@ export default function ResumePortfolio() {
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       <input type="text" value={tr.organizer} onChange={(e) => {
                         const updated = [...draftTrainings];
                         updated[index].organizer = e.target.value;
@@ -914,17 +912,19 @@ export default function ResumePortfolio() {
               </div>
             )}
 
-            <div className="space-y-4">
+            <div className="space-y-3.5 sm:space-y-4">
               {trainings.map(tr => (
-                <div key={tr.id} className="p-4 bg-slate-50 rounded-2xl border border-slate-200/70 text-xs space-y-2 hover:border-emerald-300 transition">
+                <div key={tr.id} className="p-3.5 sm:p-4 bg-slate-50 rounded-2xl border border-slate-200/70 text-xs space-y-2 hover:border-emerald-300 transition">
                   <div>
-                    <p className="font-bold text-slate-900 text-sm">{tr.title}</p>
+                    <p className="font-bold text-slate-900 text-xs sm:text-sm leading-snug">{tr.title}</p>
                     <p className="text-[11px] text-slate-500 font-medium mt-0.5">{tr.organizer} • {tr.date}</p>
                   </div>
                   <div className="flex flex-wrap gap-2 pt-2 border-t border-slate-200/60">
                     {tr.fileUrls && tr.fileUrls.map((file: any, idx: number) => (
-                      <a key={idx} href={file.url} target="_blank" rel="noreferrer" className="px-3 py-1.5 bg-white hover:bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-lg font-bold text-[10px] transition flex items-center gap-1 shadow-xs">
-                        <FileText className="w-3 h-3" /> {file.label} <ExternalLink className="w-2.5 h-2.5" />
+                      <a key={idx} href={file.url} target="_blank" rel="noreferrer" className="px-3 py-2 sm:py-1.5 bg-white hover:bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-lg font-bold text-[11px] sm:text-[10px] transition flex items-center gap-1 shadow-xs">
+                        <FileText className="w-3.5 h-3.5 flex-shrink-0" /> 
+                        <span className="break-all">{file.label}</span> 
+                        <ExternalLink className="w-3 h-3 flex-shrink-0" />
                       </a>
                     ))}
                   </div>
@@ -934,9 +934,9 @@ export default function ResumePortfolio() {
           </section>
 
           {/* 4. HONORS & ACHIEVEMENTS */}
-          <section className="bg-white/90 backdrop-blur-sm border border-slate-200/80 rounded-3xl p-6 sm:p-8 shadow-xl shadow-slate-200/40 hover:-translate-y-1.5 hover:shadow-2xl transition-all duration-500">
+          <section className="bg-white/90 backdrop-blur-sm border border-slate-200/80 rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-lg sm:shadow-xl shadow-slate-200/40 transition-all duration-500">
             <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
-              <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2.5">
+              <h2 className="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
                 <Trophy className="w-5 h-5 text-amber-500" /> Honors & Key Achievements
               </h2>
               <div className="flex items-center gap-2">
@@ -944,9 +944,9 @@ export default function ResumePortfolio() {
                   <>
                     <button
                       onClick={() => setShowAddAchForm(!showAddAchForm)}
-                      className="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-xs flex items-center gap-1 transition cursor-pointer shadow-xs"
+                      className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-xs flex items-center gap-1 transition cursor-pointer shadow-xs"
                     >
-                      <PlusCircle className="w-3.5 h-3.5" /> {showAddAchForm ? "Close Form" : "+ Add Item"}
+                      <PlusCircle className="w-3.5 h-3.5" /> {showAddAchForm ? "Close" : "+ Add"}
                     </button>
                     <button
                       onClick={() => {
@@ -957,9 +957,9 @@ export default function ResumePortfolio() {
                           setEditingSection("achieve");
                         }
                       }}
-                      className="px-3 py-1 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-lg text-xs flex items-center gap-1 transition cursor-pointer shadow-xs"
+                      className="px-2.5 py-1 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-lg text-xs flex items-center gap-1 transition cursor-pointer shadow-xs"
                     >
-                      <Edit2 className="w-3.5 h-3.5" /> {editingSection === "achieve" ? "Cancel" : "Edit List"}
+                      <Edit2 className="w-3.5 h-3.5" /> {editingSection === "achieve" ? "Cancel" : "Edit"}
                     </button>
                   </>
                 )}
@@ -981,7 +981,7 @@ export default function ResumePortfolio() {
                 <div className="space-y-2 pt-2 border-t border-amber-200">
                   <p className="font-bold text-amber-900">Public Docs Files:</p>
                   {newAch.files.map((file, idx) => (
-                    <div key={idx} className="flex items-center gap-2">
+                    <div key={idx} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                       <input type="text" placeholder="Label" value={file.label} onChange={(e) => {
                         const updated = [...newAch.files];
                         updated[idx].label = e.target.value;
@@ -992,7 +992,7 @@ export default function ResumePortfolio() {
                         updated[idx].url = e.target.value;
                         setNewAch({ ...newAch, files: updated });
                       }} className="p-1.5 bg-white rounded border border-amber-300 flex-1" />
-                      <button onClick={() => setNewAch({ ...newAch, files: newAch.files.filter((_, i) => i !== idx) })} className="p-1 bg-rose-500 text-white rounded"><Trash2 className="w-3.5 h-3.5" /></button>
+                      <button onClick={() => setNewAch({ ...newAch, files: newAch.files.filter((_, i) => i !== idx) })} className="p-1 bg-rose-500 text-white rounded flex items-center justify-center"><Trash2 className="w-3.5 h-3.5" /></button>
                     </div>
                   ))}
                   <button onClick={() => setNewAch({ ...newAch, files: [...newAch.files, { label: "", url: "" }] })} className="px-2.5 py-1 bg-amber-700 text-white text-[10px] font-bold rounded flex items-center gap-1">
@@ -1039,19 +1039,21 @@ export default function ResumePortfolio() {
               </div>
             )}
 
-            <div className="space-y-4">
+            <div className="space-y-3.5 sm:space-y-4">
               {achievements.map((ach) => (
-                <div key={ach.id} className="p-4 bg-amber-50/60 border border-amber-200/70 rounded-2xl text-xs shadow-xs space-y-3 relative group">
+                <div key={ach.id} className="p-3.5 sm:p-4 bg-amber-50/60 border border-amber-200/70 rounded-2xl text-xs shadow-xs space-y-3 relative">
                   <div>
-                    <p className="font-bold text-amber-900 text-sm">{ach.title}</p>
+                    <p className="font-bold text-amber-900 text-xs sm:text-sm leading-snug">{ach.title}</p>
                     <p className="text-[11px] text-amber-800 mt-0.5">{ach.event}</p>
                     <p className="text-[10px] text-slate-400 mt-1">{ach.date}</p>
                   </div>
                   <div className="flex flex-wrap gap-2 pt-2 border-t border-amber-200/50 items-center justify-between">
                     <div className="flex flex-wrap gap-2">
                       {ach.fileUrls?.map((file: any, idx: number) => (
-                        <a key={idx} href={file.url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white font-bold text-[10px] rounded-lg shadow-xs transition">
-                          <FileText className="w-3.5 h-3.5" /> {file.label} <ExternalLink className="w-3 h-3" />
+                        <a key={idx} href={file.url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 px-3 py-2 sm:py-1.5 bg-amber-600 hover:bg-amber-700 text-white font-bold text-[11px] sm:text-[10px] rounded-lg shadow-xs transition">
+                          <FileText className="w-3.5 h-3.5 flex-shrink-0" /> 
+                          <span className="break-all">{file.label}</span> 
+                          <ExternalLink className="w-3 h-3 flex-shrink-0" />
                         </a>
                       ))}
                     </div>
@@ -1066,15 +1068,15 @@ export default function ResumePortfolio() {
             </div>
           </section>
 
-          {/* 5. ACADEMIC PROJECTS SECTION (CLICK ACCORDION & AUTO-CLOSE) */}
-          <section className="bg-white/90 backdrop-blur-sm border border-slate-200/80 rounded-3xl p-6 sm:p-8 shadow-xl shadow-slate-200/40 hover:-translate-y-1.5 hover:shadow-2xl transition-all duration-500">
-            <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-100">
-              <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2.5">
+          {/* 5. ACADEMIC PROJECTS SECTION */}
+          <section className="bg-white/90 backdrop-blur-sm border border-slate-200/80 rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-lg sm:shadow-xl shadow-slate-200/40 transition-all duration-500">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-5 sm:mb-6 pb-3.5 border-b border-slate-100">
+              <h2 className="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
                 <FileCheck className="w-5 h-5 text-emerald-600" />
                 Academic Projects & Food Portfolio
               </h2>
-              <div className="flex items-center gap-2">
-                <span className="text-[11px] font-medium text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full hidden sm:inline">
+              <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
+                <span className="text-[11px] font-medium text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">
                   Click for Details
                 </span>
                 {isDevActive && (
@@ -1082,7 +1084,7 @@ export default function ResumePortfolio() {
                     onClick={() => setShowAddProjForm(!showAddProjForm)}
                     className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center gap-1 shadow-xs transition cursor-pointer"
                   >
-                    <PlusCircle className="w-4 h-4" /> {showAddProjForm ? "Close Form" : "+ Add Project"}
+                    <PlusCircle className="w-4 h-4" /> {showAddProjForm ? "Close" : "+ Add"}
                   </button>
                 )}
               </div>
@@ -1101,7 +1103,7 @@ export default function ResumePortfolio() {
                 <div className="space-y-2 pt-2 border-t border-emerald-200">
                   <p className="font-bold text-emerald-900">Public Docs Files:</p>
                   {newProj.files.map((file, idx) => (
-                    <div key={idx} className="flex items-center gap-2">
+                    <div key={idx} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                       <input type="text" placeholder="Label" value={file.label} onChange={(e) => {
                         const updated = [...newProj.files];
                         updated[idx].label = e.target.value;
@@ -1112,7 +1114,7 @@ export default function ResumePortfolio() {
                         updated[idx].url = e.target.value;
                         setNewProj({ ...newProj, files: updated });
                       }} className="p-1.5 bg-white rounded border border-emerald-300 flex-1" />
-                      <button onClick={() => setNewProj({ ...newProj, files: newProj.files.filter((_, i) => i !== idx) })} className="p-1 bg-rose-500 text-white rounded"><Trash2 className="w-3.5 h-3.5" /></button>
+                      <button onClick={() => setNewProj({ ...newProj, files: newProj.files.filter((_, i) => i !== idx) })} className="p-1 bg-rose-500 text-white rounded flex items-center justify-center"><Trash2 className="w-3.5 h-3.5" /></button>
                     </div>
                   ))}
                   <button onClick={() => setNewProj({ ...newProj, files: [...newProj.files, { label: "", url: "" }] })} className="px-2.5 py-1 bg-emerald-700 text-white text-[10px] font-bold rounded flex items-center gap-1">
@@ -1127,27 +1129,27 @@ export default function ResumePortfolio() {
               </div>
             )}
 
-            <div className="space-y-4">
+            <div className="space-y-3.5 sm:space-y-4">
               {projects.map((proj) => (
                 <div 
                   key={proj.id} 
                   id={proj.id} 
-                  className="border border-slate-200 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 scroll-mt-24 bg-white"
+                  className="border border-slate-200 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-lg bg-white"
                 >
                   <div 
                     onClick={() => setExpandedProj(expandedProj === proj.id ? null : proj.id)}
-                    className="w-full p-4 bg-slate-50/80 hover:bg-slate-100/80 flex items-center justify-between transition-colors cursor-pointer"
+                    className="w-full p-3.5 sm:p-4 bg-slate-50/80 hover:bg-slate-100/80 flex items-start sm:items-center justify-between transition-colors cursor-pointer gap-2"
                   >
-                    <div className="text-left flex-1 pr-4">
-                      <span className="text-[10px] font-extrabold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-md">
+                    <div className="text-left flex-1 pr-2">
+                      <span className="text-[10px] font-extrabold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-md inline-block mb-1">
                         {proj.date}
                       </span>
-                      <h3 className="font-bold text-slate-900 text-sm sm:text-base mt-1">
+                      <h3 className="font-bold text-slate-900 text-xs sm:text-base leading-snug">
                         {proj.title}
                       </h3>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
                       {isDevActive && (
                         <>
                           <button
@@ -1160,23 +1162,22 @@ export default function ResumePortfolio() {
                                 setEditingSection(proj.id);
                               }
                             }}
-                            className="px-2.5 py-1 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-lg text-[10px] flex items-center gap-1 shadow-xs transition cursor-pointer"
+                            className="px-2 py-1 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-lg text-[10px] flex items-center gap-1 shadow-xs cursor-pointer"
                           >
-                            <Edit2 className="w-3 h-3" /> {editingSection === proj.id ? "Cancel" : "Edit"}
+                            <Edit2 className="w-3 h-3" />
                           </button>
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
                               handleRemoveProject(proj.id);
                             }}
-                            className="p-1.5 bg-rose-100 hover:bg-rose-500 text-rose-600 hover:text-white rounded-lg transition cursor-pointer shadow-xs"
-                            title="Move to trash (Remove project)"
+                            className="p-1 bg-rose-100 hover:bg-rose-500 text-rose-600 hover:text-white rounded-lg transition cursor-pointer"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
                         </>
                       )}
-                      <div className="p-1.5 rounded-full bg-white border border-slate-200 shadow-xs">
+                      <div className="p-1 sm:p-1.5 rounded-full bg-white border border-slate-200 shadow-xs">
                         {expandedProj === proj.id ? <ChevronUp className="w-4 h-4 text-emerald-600" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
                       </div>
                     </div>
@@ -1207,21 +1208,21 @@ export default function ResumePortfolio() {
                       <div className="space-y-2 pt-2 border-t border-amber-200">
                         <p className="font-bold text-amber-900">Manage Documents:</p>
                         {draftProject?.fileUrls?.map((file: any, fIdx: number) => (
-                          <div key={fIdx} className="flex items-center gap-2">
+                          <div key={fIdx} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                             <input type="text" value={file.label} onChange={(e) => {
                               const updated = [...draftProject.fileUrls];
                               updated[fIdx].label = e.target.value;
                               setDraftProject({ ...draftProject, fileUrls: updated });
-                            }} className="p-1 bg-white rounded border border-amber-300 flex-1" placeholder="Label" />
+                            }} className="p-1.5 bg-white rounded border border-amber-300 flex-1" placeholder="Label" />
                             <input type="text" value={file.url} onChange={(e) => {
                               const updated = [...draftProject.fileUrls];
                               updated[fIdx].url = e.target.value;
                               setDraftProject({ ...draftProject, fileUrls: updated });
-                            }} className="p-1 bg-white rounded border border-amber-300 flex-1" placeholder="Path (/docs/...)" />
+                            }} className="p-1.5 bg-white rounded border border-amber-300 flex-1" placeholder="Path (/docs/...)" />
                             <button onClick={() => {
                               const updated = draftProject.fileUrls.filter((_: any, i: number) => i !== fIdx);
                               setDraftProject({ ...draftProject, fileUrls: updated });
-                            }} className="p-1 bg-rose-500 text-white rounded"><Trash2 className="w-3 h-3" /></button>
+                            }} className="p-1 bg-rose-500 text-white rounded flex items-center justify-center"><Trash2 className="w-3.5 h-3.5" /></button>
                           </div>
                         ))}
                         <button onClick={() => setDraftProject({ ...draftProject, fileUrls: [...(draftProject?.fileUrls || []), { label: "", url: "" }] })} className="px-2 py-1 bg-amber-700 text-white text-[10px] rounded flex items-center gap-1">
@@ -1250,13 +1251,13 @@ export default function ResumePortfolio() {
                     </div>
                   )}
 
-                  <div className={`transition-all duration-300 ease-in-out overflow-hidden ${expandedProj === proj.id ? "max-h-[800px] opacity-100" : "max-h-0 opacity-0"}`}>
-                    <div className="p-5 bg-white border-t border-slate-100 text-xs text-slate-600 space-y-3 leading-relaxed border-l-4 border-l-emerald-500">
+                  <div className={`transition-all duration-300 ease-in-out overflow-hidden ${expandedProj === proj.id ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"}`}>
+                    <div className="p-4 sm:p-5 bg-white border-t border-slate-100 text-xs text-slate-600 space-y-3 leading-relaxed border-l-4 border-l-emerald-500">
                       <p className="font-medium text-slate-700">{proj.desc}</p>
                       {proj.badge && (
-                        <div className="p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center justify-between shadow-xs">
-                          <span className="font-bold text-emerald-900">Project Tag / Status</span>
-                          <span className="font-mono bg-white px-2.5 py-1 rounded-lg border border-emerald-300 text-slate-800 font-bold">{proj.badge}</span>
+                        <div className="p-3 sm:p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1 sm:gap-2">
+                          <span className="font-bold text-emerald-900 text-[11px] sm:text-xs">Project Tag / Status</span>
+                          <span className="font-mono bg-white px-2.5 py-1 rounded-lg border border-emerald-300 text-slate-800 font-bold text-[11px] sm:text-xs break-all">{proj.badge}</span>
                         </div>
                       )}
 
@@ -1265,8 +1266,10 @@ export default function ResumePortfolio() {
                           <p className="font-bold text-slate-900 mb-2">Project Documents Available:</p>
                           <div className="flex flex-wrap gap-2">
                             {proj.fileUrls.map((file: any, idx: number) => (
-                              <a key={idx} href={file.url} target="_blank" rel="noreferrer" className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold text-[10px] transition flex items-center gap-1 shadow-xs">
-                                <FileText className="w-3 h-3" /> {file.label} <ExternalLink className="w-3 h-3" />
+                              <a key={idx} href={file.url} target="_blank" rel="noreferrer" className="px-3 py-2 sm:py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold text-[11px] sm:text-[10px] transition flex items-center gap-1.5 shadow-xs">
+                                <FileText className="w-3.5 h-3.5 flex-shrink-0" /> 
+                                <span className="break-all">{file.label}</span> 
+                                <ExternalLink className="w-3 h-3 flex-shrink-0" />
                               </a>
                             ))}
                           </div>
@@ -1280,9 +1283,9 @@ export default function ResumePortfolio() {
           </section>
 
           {/* 6. CORE SKILLS */}
-          <section className="bg-white/90 backdrop-blur-sm border border-slate-200/80 rounded-3xl p-6 sm:p-8 shadow-xl shadow-slate-200/40 hover:-translate-y-1.5 hover:shadow-2xl transition-all duration-500">
+          <section className="bg-white/90 backdrop-blur-sm border border-slate-200/80 rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-lg sm:shadow-xl shadow-slate-200/40 transition-all duration-500">
             <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
-              <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2.5">
+              <h2 className="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
                 <ShieldCheck className="w-5 h-5 text-emerald-600" /> Core Competencies & Skills
               </h2>
             </div>
@@ -1301,23 +1304,23 @@ export default function ResumePortfolio() {
                   onClick={handleAddSkill}
                   className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-lg flex items-center gap-1 cursor-pointer transition shadow-sm"
                 >
-                  <PlusCircle className="w-3.5 h-3.5" /> Add Skill
+                  <PlusCircle className="w-3.5 h-3.5" /> Add
                 </button>
               </div>
             )}
 
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1.5 sm:gap-2">
               {skills.map((sk, idx) => (
                 <div
                   key={idx}
-                  className="group relative text-xs px-3.5 py-2 bg-slate-100 hover:bg-emerald-50 text-slate-700 hover:text-emerald-900 font-semibold rounded-xl border border-slate-200 transition-all duration-300 transform flex items-center gap-2 hover:scale-105 shadow-xs"
+                  className="group relative text-[11px] sm:text-xs px-3 py-1.5 sm:px-3.5 sm:py-2 bg-slate-100 hover:bg-emerald-50 text-slate-700 hover:text-emerald-900 font-semibold rounded-xl border border-slate-200 transition-all duration-300 flex items-center gap-1.5 shadow-xs"
                 >
                   <span>{sk}</span>
                   {isDevActive && (
                     <button
                       onClick={() => handleRemoveSkill(idx)}
-                      className="p-1 bg-rose-100 hover:bg-rose-500 text-rose-600 hover:text-white rounded-md transition-all duration-200 cursor-pointer shadow-xs"
-                      title="Move to trash (Remove skill)"
+                      className="p-0.5 bg-rose-100 hover:bg-rose-500 text-rose-600 hover:text-white rounded transition-all cursor-pointer"
+                      title="Remove skill"
                     >
                       <Trash2 className="w-3 h-3" />
                     </button>
@@ -1331,10 +1334,10 @@ export default function ResumePortfolio() {
 
         {/* DEVELOPER LOGIN PANEL */}
         {isDevMode && !currentUser && (
-          <div className="mt-12 p-6 bg-slate-900 text-white rounded-3xl border border-emerald-500/40 text-center shadow-2xl transition-all duration-300">
+          <div className="mt-10 sm:mt-12 p-5 sm:p-6 bg-slate-900 text-white rounded-2xl sm:rounded-3xl border border-emerald-500/40 text-center shadow-2xl transition-all duration-300">
             <Lock className="w-8 h-8 text-emerald-400 mx-auto mb-2" />
             <h3 className="font-bold text-sm mb-1">Developer Mode Unlocked</h3>
-            <p className="text-xs text-slate-400 mb-4">Sign in with your authorized email (`ibnusenamhmd@gmail.com`) to enable editing.</p>
+            <p className="text-xs text-slate-400 mb-4 break-all">Sign in with your authorized email (`ibnusenamhmd@gmail.com`) to enable editing.</p>
             <button
               onClick={handleGoogleLogin}
               className="px-5 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-xl transition-all shadow-lg inline-flex items-center gap-2 cursor-pointer"
@@ -1346,9 +1349,9 @@ export default function ResumePortfolio() {
 
         {/* DEVELOPER LOGGED-IN STATUS BAR */}
         {isDevActive && (
-          <div className="mt-12 p-4 bg-slate-900 text-white rounded-2xl border border-emerald-500/40 flex items-center justify-between text-xs shadow-xl">
-            <span className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+          <div className="mt-10 sm:mt-12 p-3.5 sm:p-4 bg-slate-900 text-white rounded-2xl border border-emerald-500/40 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs shadow-xl">
+            <span className="flex items-center gap-2 text-center sm:text-left break-all">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse flex-shrink-0" />
               Authorized Developer Active ({currentUser.email})
             </span>
             <button
@@ -1361,8 +1364,8 @@ export default function ResumePortfolio() {
         )}
 
         {/* FOOTER */}
-        <footer className="mt-14 text-center text-xs text-slate-400 border-t border-slate-200 pt-6">
-          <p>
+        <footer className="mt-10 sm:mt-14 text-center text-xs text-slate-400 border-t border-slate-200 pt-6">
+          <p className="px-2">
             © {currentYear}{" "}
             <span
               onClick={handleSecretClick}
