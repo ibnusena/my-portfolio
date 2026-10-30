@@ -48,7 +48,7 @@ export default function ResumePortfolio() {
     email: "ibnusenamhmd@gmail.com",
     phone: "6285814409513",
     location: "South Jakarta, DKI Jakarta, Indonesia",
-    photoUrl: "/docs/Sena.jpg", 
+    photoUrl: "/docs/Sena.png", 
   });
   const [draftProfile, setDraftProfile] = useState({ ...portfolioData });
 
