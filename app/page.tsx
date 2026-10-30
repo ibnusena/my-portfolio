@@ -29,6 +29,7 @@ import {
   PlusCircle,
   Trash2,
   Plus,
+  Download,
 } from "lucide-react";
 
 const DEVELOPER_EMAIL = "ibnusenamhmd@gmail.com";
@@ -48,7 +49,8 @@ export default function ResumePortfolio() {
     email: "ibnusenamhmd@gmail.com",
     phone: "6285814409513",
     location: "South Jakarta, DKI Jakarta, Indonesia",
-    photoUrl: "/docs/Sena.png", 
+    photoUrl: "/docs/Sena.jpg", 
+    cvUrl: "/docs/CV_MIS.pdf", // Path file CV
   });
   const [draftProfile, setDraftProfile] = useState({ ...portfolioData });
 
@@ -426,8 +428,18 @@ export default function ResumePortfolio() {
               </div>
             </div>
 
-            {/* KONTAK */}
+            {/* KONTAK & TOMBOL DOWNLOAD CV */}
             <div className="flex flex-col gap-2 w-full md:w-auto text-xs">
+              <a 
+                href={portfolioData.cvUrl} 
+                target="_blank" 
+                rel="noreferrer" 
+                download
+                className="flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold shadow-md shadow-emerald-600/20 transition-all cursor-pointer transform hover:-translate-y-0.5 active:translate-y-0"
+              >
+                <Download className="w-4 h-4 text-white flex-shrink-0 animate-bounce" />
+                <span>Download Curriculum Vitae (CV)</span>
+              </a>
               <a href={`mailto:${portfolioData.email}`} className="flex items-center justify-center sm:justify-start gap-2 px-3.5 py-2.5 rounded-xl bg-slate-50 hover:bg-emerald-50 border border-slate-200 transition-all text-slate-700 font-medium break-all">
                 <Mail className="w-4 h-4 text-emerald-600 flex-shrink-0" />
                 <span>{portfolioData.email}</span>
@@ -445,7 +457,7 @@ export default function ResumePortfolio() {
 
           {editingSection === "profile" && isDevActive && (
             <div className="mt-6 p-4 bg-amber-50/90 border border-amber-200 rounded-2xl text-xs space-y-3 transition-all duration-300">
-              <p className="font-bold text-amber-900">⚙️ Edit Profile Details & Photo URL</p>
+              <p className="font-bold text-amber-900">⚙️ Edit Profile Details, CV & Photo URL</p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block font-semibold mb-1">Full Name:</label>
@@ -464,14 +476,18 @@ export default function ResumePortfolio() {
                   <input type="text" value={draftProfile.phone} onChange={(e) => setDraftProfile({ ...draftProfile, phone: e.target.value })} className="w-full p-2 bg-white rounded-lg border border-amber-300" />
                 </div>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
                   <label className="block font-semibold mb-1">Location:</label>
                   <input type="text" value={draftProfile.location} onChange={(e) => setDraftProfile({ ...draftProfile, location: e.target.value })} className="w-full p-2 bg-white rounded-lg border border-amber-300" />
                 </div>
                 <div>
                   <label className="block font-semibold mb-1">Profile Photo Path (/docs/Sena.jpg):</label>
-                  <input type="text" value={draftProfile.photoUrl} onChange={(e) => setDraftProfile({ ...draftProfile, photoUrl: e.target.value })} className="w-full p-2 bg-white rounded-lg border border-amber-300" placeholder="/docs/filename.jpg" />
+                  <input type="text" value={draftProfile.photoUrl} onChange={(e) => setDraftProfile({ ...draftProfile, photoUrl: e.target.value })} className="w-full p-2 bg-white rounded-lg border border-amber-300" />
+                </div>
+                <div>
+                  <label className="block font-semibold mb-1">CV File Path (/docs/...pdf):</label>
+                  <input type="text" value={draftProfile.cvUrl} onChange={(e) => setDraftProfile({ ...draftProfile, cvUrl: e.target.value })} className="w-full p-2 bg-white rounded-lg border border-amber-300" />
                 </div>
               </div>
               <div>
@@ -505,7 +521,7 @@ export default function ResumePortfolio() {
           <div onClick={() => scrollToCard("exp_bpjph", 'exp')} className="bg-white/90 backdrop-blur-sm border border-slate-200/80 p-3.5 sm:p-4 rounded-2xl shadow-sm sm:shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer group">
             <p className="text-2xl sm:text-3xl font-extrabold text-emerald-600">5,500+</p>
             <p className="text-[11px] text-slate-500 mt-1 font-medium flex items-center justify-between">
-              SJPH Verification <ArrowRight className="w-3 h-3 text-emerald-600" />
+              Halal Document Submission <ArrowRight className="w-3 h-3 text-emerald-600" />
             </p>
           </div>
           <div onClick={() => scrollToCard("exp_bem", 'exp')} className="bg-white/90 backdrop-blur-sm border border-slate-200/80 p-3.5 sm:p-4 rounded-2xl shadow-sm sm:shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer group">
