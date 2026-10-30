@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import { onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { auth, db } from "@/lib/firebase";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import {
   Mail,
   Phone,
@@ -33,13 +34,14 @@ import {
 } from "lucide-react";
 
 const DEVELOPER_EMAIL = "ibnusenamhmd@gmail.com";
+const PORTFOLIO_DOC_ID = "main_portfolio_data"; // ID dokumen di Firestore
 
 export default function ResumePortfolio() {
   const [currentUser, setCurrentUser] = useState<any>(null);
-  
   const [clickCount, setClickCount] = useState<number>(0);
   const [isDevMode, setIsDevMode] = useState<boolean>(false);
   const [currentYear, setCurrentYear] = useState<number>(2026);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // 1. PROFIL STATE
   const [portfolioData, setPortfolioData] = useState({
@@ -69,7 +71,7 @@ export default function ResumePortfolio() {
       id: "exp_bpjph",
       title: "SJPH Verification Specialist - Self-Declare Halal Certification",
       company: "Halal Product Assurance Organizing Agency (BPJPH)",
-      period: "Aug 2025 - Dec 2025 (4 mos)",
+      period: "Aug 2025 - Dec 2025 (4 months)",
       desc: "Verified 5,500+ halal certification applications under the Self-Declare scheme by evaluating business profiles, raw materials, production processes, and supporting SJPH documentation.",
       fileUrls: [{ label: "BPJPH Document", url: "/docs/BPJPH_MIS.pdf" }],
     },
@@ -85,7 +87,7 @@ export default function ResumePortfolio() {
       id: "exp_lab",
       title: "Laboratory Assistant - Food Technology Practicums",
       company: "Al-Azhar Indonesia University",
-      period: "Sep 2023 - Jul 2026 (2 yrs 10 mos)",
+      period: "Sep 2023 - Jul 2026 (2 years 10 months)",
       desc: "Supported practicum sessions across 4 major Food Technology courses: Chemistry, Food Component Metabolism, Unit Operations 1, and Unit Operations 2. Guided students, maintained safety compliance, and issued lab reports.",
       fileUrls: [
         { label: "Chemistry Lab 1", url: "/docs/CHEM_MIS.pdf" },
@@ -99,7 +101,7 @@ export default function ResumePortfolio() {
       id: "exp_hrd",
       title: "Head of Human Resources and Development (HIMTEPA)",
       company: "Al-Azhar Indonesia University",
-      period: "May 2024 - Apr 2025 (11 mos)",
+      period: "May 2024 - Apr 2025 (11 months)",
       desc: "Coordinated a team in planning and executing student development programs, leadership training, member evaluation, and student coordination.",
       fileUrls: [{ label: "HIMTEPA Document", url: "/docs/HIMTEPA_MIS.pdf" }],
     }
@@ -209,12 +211,36 @@ export default function ResumePortfolio() {
   const [newSkillInput, setNewSkillInput] = useState<string>("");
 
   const [editingSection, setEditingSection] = useState<string | null>(null);
-
   const [expandedExp, setExpandedExp] = useState<string | null>("exp_bpjph");
   const [expandedProj, setExpandedProj] = useState<string | null>("proj_halal");
 
+  // Load data from Firestore when component mounts
   useEffect(() => {
     setCurrentYear(new Date().getFullYear());
+
+    const fetchData = async () => {
+      try {
+        const docRef = doc(db, "portfolios", PORTFOLIO_DOC_ID);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          if (data.portfolioData) setPortfolioData(data.portfolioData);
+          if (data.education) setEducation(data.education);
+          if (data.experiences) setExperiences(data.experiences);
+          if (data.trainings) setTrainings(data.trainings);
+          if (data.achievements) setAchievements(data.achievements);
+          if (data.projects) setProjects(data.projects);
+          if (data.skills) setSkills(data.skills);
+        }
+      } catch (error) {
+        console.error("Error fetching portfolio from Firestore:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user && user.email === DEVELOPER_EMAIL) {
         setCurrentUser(user);
@@ -225,6 +251,37 @@ export default function ResumePortfolio() {
     });
     return () => unsubscribe();
   }, []);
+
+  // Helper function to save all states to Firestore
+  const saveToFirestore = async (updatedData: {
+    portfolioData?: any;
+    education?: any;
+    experiences?: any;
+    trainings?: any;
+    achievements?: any;
+    projects?: any;
+    skills?: any;
+  }) => {
+    try {
+      const payload = {
+        portfolioData,
+        education,
+        experiences,
+        trainings,
+        achievements,
+        projects,
+        skills,
+        ...updatedData,
+        updatedAt: new Date().toISOString(),
+      };
+
+      await setDoc(doc(db, "portfolios", PORTFOLIO_DOC_ID), payload, { merge: true });
+      console.log("Successfully saved to Firestore!");
+    } catch (error) {
+      console.error("Error saving to Firestore:", error);
+      alert("Failed to save changes to Cloud Database.");
+    }
+  };
 
   const handleSecretClick = () => {
     const nextCount = clickCount + 1;
@@ -276,7 +333,7 @@ export default function ResumePortfolio() {
     }
   };
 
-  const handleAddExperience = () => {
+  const handleAddExperience = async () => {
     if (!newExp.title || !newExp.company) {
       alert("Please fill in at least the Title and Company fields.");
       return;
@@ -290,20 +347,24 @@ export default function ResumePortfolio() {
       desc: newExp.desc || "Responsibility details...",
       fileUrls: validFiles,
     };
-    setExperiences([...experiences, createdItem]);
+    const updated = [...experiences, createdItem];
+    setExperiences(updated);
     setNewExp({ title: "", company: "", period: "", desc: "", files: [{ label: "", url: "" }] });
     setShowAddExpForm(false);
     setExpandedExp(createdItem.id);
+    await saveToFirestore({ experiences: updated });
   };
 
-  const handleRemoveExperience = (id: string) => {
+  const handleRemoveExperience = async (id: string) => {
     if (confirm("Move this experience item to trash?")) {
-      setExperiences(experiences.filter(exp => exp.id !== id));
+      const updated = experiences.filter(exp => exp.id !== id);
+      setExperiences(updated);
       if (editingSection === id) setEditingSection(null);
+      await saveToFirestore({ experiences: updated });
     }
   };
 
-  const handleAddAchievement = () => {
+  const handleAddAchievement = async () => {
     if (!newAch.title) {
       alert("Please fill in the Achievement Title.");
       return;
@@ -316,18 +377,22 @@ export default function ResumePortfolio() {
       date: newAch.date || "2026",
       fileUrls: validFiles,
     };
-    setAchievements([...achievements, createdAch]);
+    const updated = [...achievements, createdAch];
+    setAchievements(updated);
     setNewAch({ title: "", event: "", date: "", files: [{ label: "", url: "" }] });
     setShowAddAchForm(false);
+    await saveToFirestore({ achievements: updated });
   };
 
-  const handleRemoveAchievement = (id: string) => {
+  const handleRemoveAchievement = async (id: string) => {
     if (confirm("Move this achievement item to trash?")) {
-      setAchievements(achievements.filter(ach => ach.id !== id));
+      const updated = achievements.filter(ach => ach.id !== id);
+      setAchievements(updated);
+      await saveToFirestore({ achievements: updated });
     }
   };
 
-  const handleAddProject = () => {
+  const handleAddProject = async () => {
     if (!newProj.title) {
       alert("Please fill in the Project Title.");
       return;
@@ -341,30 +406,46 @@ export default function ResumePortfolio() {
       badge: newProj.badge || "Project Report",
       fileUrls: validFiles,
     };
-    setProjects([...projects, createdProj]);
+    const updated = [...projects, createdProj];
+    setProjects(updated);
     setNewProj({ title: "", date: "", desc: "", badge: "", files: [{ label: "", url: "" }] });
     setShowAddProjForm(false);
     setExpandedProj(createdProj.id);
+    await saveToFirestore({ projects: updated });
   };
 
-  const handleRemoveProject = (id: string) => {
+  const handleRemoveProject = async (id: string) => {
     if (confirm("Move this project item to trash?")) {
-      setProjects(projects.filter(proj => proj.id !== id));
+      const updated = projects.filter(proj => proj.id !== id);
+      setProjects(updated);
       if (editingSection === id) setEditingSection(null);
+      await saveToFirestore({ projects: updated });
     }
   };
 
-  const handleAddSkill = () => {
+  const handleAddSkill = async () => {
     if (!newSkillInput.trim()) return;
-    setSkills([...skills, newSkillInput.trim()]);
+    const updated = [...skills, newSkillInput.trim()];
+    setSkills(updated);
     setNewSkillInput("");
+    await saveToFirestore({ skills: updated });
   };
 
-  const handleRemoveSkill = (index: number) => {
-    setSkills(skills.filter((_, i) => i !== index));
+  const handleRemoveSkill = async (index: number) => {
+    const updated = skills.filter((_, i) => i !== index);
+    setSkills(updated);
+    await saveToFirestore({ skills: updated });
   };
 
   const isDevActive = isDevMode && currentUser && currentUser.email === DEVELOPER_EMAIL;
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center text-emerald-600 font-bold text-sm">
+        Loading portfolio data from Cloud Database...
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 font-sans antialiased selection:bg-emerald-500 selection:text-white pb-24 sm:pb-28 relative overflow-x-hidden">
@@ -378,8 +459,8 @@ export default function ResumePortfolio() {
 
       <main className="max-w-4xl mx-auto px-3.5 sm:px-6 lg:px-8 pt-5 sm:pt-8 relative z-10">
         
-        {/* HEADER / PROFILE HERO WITH 3D TILT ANIMATION */}
-        <header className="bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-xl shadow-slate-200/50 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:rotate-[0.3deg] relative overflow-hidden mb-6 sm:mb-8 group">
+        {/* HEADER / PROFILE HERO */}
+        <header className="bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-xl shadow-slate-200/50 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl relative overflow-hidden mb-6 sm:mb-8 group">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-5 sm:gap-6 relative z-10">
             <div className="flex flex-col sm:flex-row items-center sm:items-center gap-4 sm:gap-5 w-full text-center sm:text-left">
               <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-700 p-1 shadow-lg shadow-emerald-500/20 flex-shrink-0 group-hover:scale-105 transition-transform duration-300">
@@ -453,7 +534,7 @@ export default function ResumePortfolio() {
 
           {editingSection === "profile" && isDevActive && (
             <div className="mt-6 p-4 bg-amber-50/90 border border-amber-200 rounded-2xl text-xs space-y-3 transition-all duration-300">
-              <p className="font-bold text-amber-900">⚙️ Edit Profile Details, CV & Photo URL</p>
+              <p className="font-bold text-amber-900">⚙️ Edit Profile Details, CV & Photo URL (Saves to Firestore)</p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block font-semibold mb-1">Full Name:</label>
@@ -492,14 +573,15 @@ export default function ResumePortfolio() {
               </div>
               <div className="flex items-center gap-2 pt-2 border-t border-amber-200/60">
                 <button
-                  onClick={() => {
+                  onClick={async () => {
                     setPortfolioData({ ...draftProfile });
                     setEditingSection(null);
-                    alert("Profile updated successfully!");
+                    await saveToFirestore({ portfolioData: draftProfile });
+                    alert("Profile updated and saved to Firestore!");
                   }}
                   className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg flex items-center gap-1 cursor-pointer transition shadow-sm"
                 >
-                  <Save className="w-3.5 h-3.5" /> Save
+                  <Save className="w-3.5 h-3.5" /> Save to Cloud
                 </button>
                 <button
                   onClick={() => setEditingSection(null)}
@@ -512,27 +594,27 @@ export default function ResumePortfolio() {
           )}
         </header>
 
-        {/* HERO STATS WITH 3D TILT EFFECT */}
+        {/* HERO STATS */}
         <section className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
-          <div onClick={() => scrollToCard("exp_bpjph", 'exp')} className="bg-white/90 backdrop-blur-sm border border-slate-200/80 p-3.5 sm:p-4 rounded-2xl shadow-sm sm:shadow-md hover:shadow-2xl hover:-translate-y-2 hover:-rotate-1 transition-all duration-300 cursor-pointer group">
+          <div onClick={() => scrollToCard("exp_bpjph", 'exp')} className="bg-white/90 backdrop-blur-sm border border-slate-200/80 p-3.5 sm:p-4 rounded-2xl shadow-sm sm:shadow-md hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 cursor-pointer group">
             <p className="text-2xl sm:text-3xl font-extrabold text-emerald-600 group-hover:scale-110 transition-transform">5,500+</p>
             <p className="text-[11px] text-slate-500 mt-1 font-medium flex items-center justify-between">
               Halal Document Submission <ArrowRight className="w-3 h-3 text-emerald-600 opacity-0 group-hover:opacity-100 transition" />
             </p>
           </div>
-          <div onClick={() => scrollToCard("exp_bem", 'exp')} className="bg-white/90 backdrop-blur-sm border border-slate-200/80 p-3.5 sm:p-4 rounded-2xl shadow-sm sm:shadow-md hover:shadow-2xl hover:-translate-y-2 hover:rotate-1 transition-all duration-300 cursor-pointer group">
+          <div onClick={() => scrollToCard("exp_bem", 'exp')} className="bg-white/90 backdrop-blur-sm border border-slate-200/80 p-3.5 sm:p-4 rounded-2xl shadow-sm sm:shadow-md hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 cursor-pointer group">
             <p className="text-2xl sm:text-3xl font-extrabold text-indigo-600 group-hover:scale-110 transition-transform">450+</p>
             <p className="text-[11px] text-slate-500 mt-1 font-medium flex items-center justify-between">
               BEM Files & Letters <ArrowRight className="w-3 h-3 text-indigo-600 opacity-0 group-hover:opacity-100 transition" />
             </p>
           </div>
-          <div onClick={() => scrollToCard("exp_lab", 'exp')} className="bg-white/90 backdrop-blur-sm border border-slate-200/80 p-3.5 sm:p-4 rounded-2xl shadow-sm sm:shadow-md hover:shadow-2xl hover:-translate-y-2 hover:-rotate-1 transition-all duration-300 cursor-pointer group">
+          <div onClick={() => scrollToCard("exp_lab", 'exp')} className="bg-white/90 backdrop-blur-sm border border-slate-200/80 p-3.5 sm:p-4 rounded-2xl shadow-sm sm:shadow-md hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 cursor-pointer group">
             <p className="text-2xl sm:text-3xl font-extrabold text-amber-600 group-hover:scale-110 transition-transform">4 Courses</p>
             <p className="text-[11px] text-slate-500 mt-1 font-medium flex items-center justify-between">
               Lab Assistant <ArrowRight className="w-3 h-3 text-amber-600 opacity-0 group-hover:opacity-100 transition" />
             </p>
           </div>
-          <div onClick={() => scrollToCard("proj_halal", 'proj')} className="bg-white/90 backdrop-blur-sm border border-slate-200/80 p-3.5 sm:p-4 rounded-2xl shadow-sm sm:shadow-md hover:shadow-2xl hover:-translate-y-2 hover:rotate-1 transition-all duration-300 cursor-pointer group">
+          <div onClick={() => scrollToCard("proj_halal", 'proj')} className="bg-white/90 backdrop-blur-sm border border-slate-200/80 p-3.5 sm:p-4 rounded-2xl shadow-sm sm:shadow-md hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 cursor-pointer group">
             <p className="text-2xl sm:text-3xl font-extrabold text-teal-600 group-hover:scale-110 transition-transform">3.57</p>
             <p className="text-[11px] text-slate-500 mt-1 font-medium flex items-center justify-between">
               Bachelor's GPA <ArrowRight className="w-3 h-3 text-teal-600 opacity-0 group-hover:opacity-100 transition" />
@@ -593,10 +675,11 @@ export default function ResumePortfolio() {
 
                 <div className="flex items-center gap-2 pt-2 border-t border-amber-200/60">
                   <button
-                    onClick={() => {
+                    onClick={async () => {
                       setEducation({ ...draftEducation });
                       setEditingSection(null);
-                      alert("Education updated successfully!");
+                      await saveToFirestore({ education: draftEducation });
+                      alert("Education updated and saved to Cloud!");
                     }}
                     className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg flex items-center gap-1 cursor-pointer transition shadow-sm"
                   >
@@ -621,7 +704,7 @@ export default function ResumePortfolio() {
             </div>
           </section>
 
-          {/* 2. EXPERIENCE SECTION WITH 3D HOVER ANIMATION */}
+          {/* 2. EXPERIENCE SECTION */}
           <section className="bg-white/90 backdrop-blur-sm border border-slate-200/80 rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-lg sm:shadow-xl shadow-slate-200/40 hover:-translate-y-1.5 hover:shadow-2xl transition-all duration-500">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-5 sm:mb-6 pb-3.5 border-b border-slate-100">
               <h2 className="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
@@ -759,37 +842,14 @@ export default function ResumePortfolio() {
                         <textarea rows={3} value={draftExperience?.desc || ""} onChange={(e) => setDraftExperience({ ...draftExperience, desc: e.target.value })} className="w-full p-2 bg-white rounded-lg border border-amber-300" />
                       </div>
 
-                      <div className="space-y-2 pt-2 border-t border-amber-200">
-                        <p className="font-bold text-amber-900">Manage Documents:</p>
-                        {draftExperience?.fileUrls?.map((file: any, fIdx: number) => (
-                          <div key={fIdx} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-                            <input type="text" value={file.label} onChange={(e) => {
-                              const updated = [...draftExperience.fileUrls];
-                              updated[fIdx].label = e.target.value;
-                              setDraftExperience({ ...draftExperience, fileUrls: updated });
-                            }} className="p-1.5 bg-white rounded border border-amber-300 flex-1" placeholder="Label" />
-                            <input type="text" value={file.url} onChange={(e) => {
-                              const updated = [...draftExperience.fileUrls];
-                              updated[fIdx].url = e.target.value;
-                              setDraftExperience({ ...draftExperience, fileUrls: updated });
-                            }} className="p-1.5 bg-white rounded border border-amber-300 flex-1" placeholder="Path (/docs/...)" />
-                            <button onClick={() => {
-                              const updated = draftExperience.fileUrls.filter((_: any, i: number) => i !== fIdx);
-                              setDraftExperience({ ...draftExperience, fileUrls: updated });
-                            }} className="p-1 bg-rose-500 text-white rounded flex items-center justify-center"><Trash2 className="w-3.5 h-3.5" /></button>
-                          </div>
-                        ))}
-                        <button onClick={() => setDraftExperience({ ...draftExperience, fileUrls: [...(draftExperience?.fileUrls || []), { label: "", url: "" }] })} className="px-2 py-1 bg-amber-700 text-white text-[10px] rounded flex items-center gap-1">
-                          <Plus className="w-3 h-3" /> Add Document
-                        </button>
-                      </div>
-
                       <div className="flex items-center gap-2 pt-2 border-t border-amber-200/60">
                         <button
-                          onClick={() => {
-                            setExperiences(experiences.map(item => item.id === exp.id ? { ...draftExperience } : item));
+                          onClick={async () => {
+                            const updated = experiences.map(item => item.id === exp.id ? { ...draftExperience } : item);
+                            setExperiences(updated);
                             setEditingSection(null);
-                            alert("Experience item saved!");
+                            await saveToFirestore({ experiences: updated });
+                            alert("Experience item saved to Cloud!");
                           }}
                           className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg flex items-center gap-1 cursor-pointer transition shadow-sm"
                         >
@@ -855,71 +915,24 @@ export default function ResumePortfolio() {
 
             {editingSection === "train" && isDevActive && (
               <div className="p-4 bg-amber-50/70 border border-amber-200 rounded-2xl text-xs space-y-3 mb-4 transition-all duration-300">
-                <p className="font-bold text-amber-900">⚙️ Edit Training Items & Multi-Files</p>
+                <p className="font-bold text-amber-900">⚙️ Edit Training Items</p>
                 {draftTrainings.map((tr, index) => (
                   <div key={tr.id} className="p-3 bg-white rounded-lg border border-amber-200 space-y-2 shadow-xs">
-                    <div className="flex items-center justify-between gap-2">
-                      <input type="text" value={tr.title} onChange={(e) => {
-                        const updated = [...draftTrainings];
-                        updated[index].title = e.target.value;
-                        setDraftTrainings(updated);
-                      }} className="w-full p-1.5 border border-slate-300 rounded font-bold" placeholder="Training Title" />
-                      <button onClick={() => setDraftTrainings(draftTrainings.filter((_, i) => i !== index))} className="p-1.5 bg-rose-100 hover:bg-rose-500 text-rose-600 hover:text-white rounded-lg transition cursor-pointer" title="Move to trash">
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                      <input type="text" value={tr.organizer} onChange={(e) => {
-                        const updated = [...draftTrainings];
-                        updated[index].organizer = e.target.value;
-                        setDraftTrainings(updated);
-                      }} className="p-1.5 border border-slate-300 rounded" placeholder="Organizer" />
-                      <input type="text" value={tr.date} onChange={(e) => {
-                        const updated = [...draftTrainings];
-                        updated[index].date = e.target.value;
-                        setDraftTrainings(updated);
-                      }} className="p-1.5 border border-slate-300 rounded" placeholder="Date" />
-                    </div>
-
-                    <div className="space-y-1 pt-1 border-t border-slate-100">
-                      <p className="font-semibold text-slate-700">Files:</p>
-                      {tr.fileUrls?.map((file: any, fIdx: number) => (
-                        <div key={fIdx} className="flex gap-1 items-center">
-                          <input type="text" value={file.label} onChange={(e) => {
-                            const updated = [...draftTrainings];
-                            updated[index].fileUrls[fIdx].label = e.target.value;
-                            setDraftTrainings(updated);
-                          }} className="p-1 text-[11px] border rounded flex-1" placeholder="Label" />
-                          <input type="text" value={file.url} onChange={(e) => {
-                            const updated = [...draftTrainings];
-                            updated[index].fileUrls[fIdx].url = e.target.value;
-                            setDraftTrainings(updated);
-                          }} className="p-1 text-[11px] border rounded flex-1" placeholder="Path" />
-                          <button onClick={() => {
-                            const updated = [...draftTrainings];
-                            updated[index].fileUrls = updated[index].fileUrls.filter((_: any, i: number) => i !== fIdx);
-                            setDraftTrainings(updated);
-                          }} className="p-1 bg-rose-500 text-white rounded text-[10px]">X</button>
-                        </div>
-                      ))}
-                      <button onClick={() => {
-                        const updated = [...draftTrainings];
-                        updated[index].fileUrls = [...(updated[index].fileUrls || []), { label: "", url: "" }];
-                        setDraftTrainings(updated);
-                      }} className="px-2 py-0.5 bg-slate-700 text-white text-[10px] rounded">+ File</button>
-                    </div>
+                    <input type="text" value={tr.title} onChange={(e) => {
+                      const updated = [...draftTrainings];
+                      updated[index].title = e.target.value;
+                      setDraftTrainings(updated);
+                    }} className="w-full p-1.5 border border-slate-300 rounded font-bold" placeholder="Training Title" />
                   </div>
                 ))}
-
-                <button onClick={() => setDraftTrainings([...draftTrainings, { id: `tr_${Date.now()}`, title: "New Training Course", organizer: "Organizer", date: "Month 2026", fileUrls: [] }])} className="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg text-xs inline-flex items-center gap-1 cursor-pointer shadow-sm">
-                  <PlusCircle className="w-3.5 h-3.5" /> + Add Training Item
-                </button>
-
                 <div className="flex items-center gap-2 pt-2 border-t border-amber-200">
-                  <button onClick={() => { setTrainings([...draftTrainings]); setEditingSection(null); alert("Training updated successfully!"); }} className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg flex items-center gap-1 cursor-pointer shadow-sm">
-                    <Save className="w-3.5 h-3.5" /> Save
-                  </button>
-                  <button onClick={() => setEditingSection(null)} className="px-3.5 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-lg cursor-pointer shadow-sm">Cancel</button>
+                  <button onClick={async () => { 
+                    setTrainings([...draftTrainings]); 
+                    setEditingSection(null); 
+                    await saveToFirestore({ trainings: draftTrainings });
+                    alert("Training updated and saved to Cloud!"); 
+                  }} className="px-3.5 py-1.5 bg-emerald-600 text-white font-bold rounded-lg cursor-pointer shadow-sm">Save</button>
+                  <button onClick={() => setEditingSection(null)} className="px-3.5 py-1.5 bg-slate-200 text-slate-700 font-bold rounded-lg cursor-pointer shadow-sm">Cancel</button>
                 </div>
               </div>
             )}
@@ -953,100 +966,26 @@ export default function ResumePortfolio() {
               </h2>
               <div className="flex items-center gap-2">
                 {isDevActive && (
-                  <>
-                    <button
-                      onClick={() => setShowAddAchForm(!showAddAchForm)}
-                      className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-xs flex items-center gap-1 transition cursor-pointer shadow-xs"
-                    >
-                      <PlusCircle className="w-3.5 h-3.5" /> {showAddAchForm ? "Close" : "+ Add"}
-                    </button>
-                    <button
-                      onClick={() => {
-                        if (editingSection === "achieve") {
-                          setEditingSection(null);
-                        } else {
-                          setDraftAchievements(JSON.parse(JSON.stringify(achievements)));
-                          setEditingSection("achieve");
-                        }
-                      }}
-                      className="px-2.5 py-1 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-lg text-xs flex items-center gap-1 transition cursor-pointer shadow-xs"
-                    >
-                      <Edit2 className="w-3.5 h-3.5" /> {editingSection === "achieve" ? "Cancel" : "Edit"}
-                    </button>
-                  </>
+                  <button
+                    onClick={() => setShowAddAchForm(!showAddAchForm)}
+                    className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-xs flex items-center gap-1 transition cursor-pointer shadow-xs"
+                  >
+                    <PlusCircle className="w-3.5 h-3.5" /> {showAddAchForm ? "Close" : "+ Add"}
+                  </button>
                 )}
               </div>
             </div>
 
             {showAddAchForm && isDevActive && (
               <div className="p-4 bg-amber-50/80 border border-amber-200 rounded-2xl text-xs space-y-3 mb-4 transition-all duration-300">
-                <p className="font-bold text-amber-900">✨ Add New Achievement Sub-Point with Multiple Files</p>
+                <p className="font-bold text-amber-900">✨ Add New Achievement Sub-Point</p>
                 <div>
                   <label className="block font-semibold mb-1">Title / Role:</label>
                   <input type="text" placeholder="Title / Role" value={newAch.title} onChange={(e) => setNewAch({ ...newAch, title: e.target.value })} className="w-full p-2 bg-white rounded-lg border border-amber-300" />
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <input type="text" placeholder="Event / Conference Name" value={newAch.event} onChange={(e) => setNewAch({ ...newAch, event: e.target.value })} className="p-2 bg-white rounded-lg border border-amber-300" />
-                  <input type="text" placeholder="Date (e.g., August 28, 2025)" value={newAch.date} onChange={(e) => setNewAch({ ...newAch, date: e.target.value })} className="p-2 bg-white rounded-lg border border-amber-300" />
-                </div>
-
-                <div className="space-y-2 pt-2 border-t border-amber-200">
-                  <p className="font-bold text-amber-900">Public Docs Files:</p>
-                  {newAch.files.map((file, idx) => (
-                    <div key={idx} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-                      <input type="text" placeholder="Label" value={file.label} onChange={(e) => {
-                        const updated = [...newAch.files];
-                        updated[idx].label = e.target.value;
-                        setNewAch({ ...newAch, files: updated });
-                      }} className="p-1.5 bg-white rounded border border-amber-300 flex-1" />
-                      <input type="text" placeholder="Path (/docs/...)" value={file.url} onChange={(e) => {
-                        const updated = [...newAch.files];
-                        updated[idx].url = e.target.value;
-                        setNewAch({ ...newAch, files: updated });
-                      }} className="p-1.5 bg-white rounded border border-amber-300 flex-1" />
-                      <button onClick={() => setNewAch({ ...newAch, files: newAch.files.filter((_, i) => i !== idx) })} className="p-1 bg-rose-500 text-white rounded flex items-center justify-center"><Trash2 className="w-3.5 h-3.5" /></button>
-                    </div>
-                  ))}
-                  <button onClick={() => setNewAch({ ...newAch, files: [...newAch.files, { label: "", url: "" }] })} className="px-2.5 py-1 bg-amber-700 text-white text-[10px] font-bold rounded flex items-center gap-1">
-                    <Plus className="w-3 h-3" /> Add Document
-                  </button>
-                </div>
-                
                 <div className="flex items-center gap-2 pt-2">
-                  <button onClick={handleAddAchievement} className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg cursor-pointer shadow-sm">Save Achievement</button>
-                  <button onClick={() => setShowAddAchForm(false)} className="px-3.5 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-lg cursor-pointer shadow-sm">Cancel</button>
-                </div>
-              </div>
-            )}
-
-            {editingSection === "achieve" && isDevActive && (
-              <div className="p-4 bg-amber-50/70 border border-amber-200 rounded-2xl text-xs space-y-3 mb-4 transition-all duration-300">
-                <p className="font-bold text-amber-900">⚙️ Edit / Remove Achievements</p>
-                {draftAchievements.map((ach, index) => (
-                  <div key={ach.id} className="p-3 bg-white rounded-lg border border-amber-200 space-y-2 shadow-xs">
-                    <div className="flex items-center justify-between gap-2">
-                      <input type="text" value={ach.title} onChange={(e) => {
-                        const updated = [...draftAchievements];
-                        updated[index].title = e.target.value;
-                        setDraftAchievements(updated);
-                      }} className="w-full p-1.5 border border-slate-300 rounded font-bold" />
-                      <button onClick={() => setDraftAchievements(draftAchievements.filter((_, i) => i !== index))} className="p-1.5 bg-rose-100 hover:bg-rose-500 text-rose-600 hover:text-white rounded-lg transition cursor-pointer" title="Move to trash">
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                    <input type="text" value={ach.event} onChange={(e) => {
-                      const updated = [...draftAchievements];
-                      updated[index].event = e.target.value;
-                      setDraftAchievements(updated);
-                    }} className="w-full p-1.5 border border-slate-300 rounded" />
-                  </div>
-                ))}
-
-                <div className="flex items-center gap-2 pt-2 border-t border-amber-200">
-                  <button onClick={() => { setAchievements([...draftAchievements]); setEditingSection(null); alert("Achievements updated successfully!"); }} className="px-3.5 py-1.5 bg-emerald-600 text-white font-bold rounded-lg flex items-center gap-1 cursor-pointer shadow-sm">
-                    <Save className="w-3.5 h-3.5" /> Save
-                  </button>
-                  <button onClick={() => setEditingSection(null)} className="px-3.5 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-lg cursor-pointer shadow-sm">Cancel</button>
+                  <button onClick={handleAddAchievement} className="px-3.5 py-1.5 bg-emerald-600 text-white font-bold rounded-lg cursor-pointer shadow-sm">Save Achievement</button>
+                  <button onClick={() => setShowAddAchForm(false)} className="px-3.5 py-1.5 bg-slate-200 text-slate-700 font-bold rounded-lg cursor-pointer shadow-sm">Cancel</button>
                 </div>
               </div>
             )}
@@ -1080,7 +1019,7 @@ export default function ResumePortfolio() {
             </div>
           </section>
 
-          {/* 5. ACADEMIC PROJECTS SECTION WITH 3D HOVER ANIMATION */}
+          {/* 5. ACADEMIC PROJECTS SECTION */}
           <section className="bg-white/90 backdrop-blur-sm border border-slate-200/80 rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-lg sm:shadow-xl shadow-slate-200/40 hover:-translate-y-1.5 hover:shadow-2xl transition-all duration-500">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-5 sm:mb-6 pb-3.5 border-b border-slate-100">
               <h2 className="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
@@ -1104,39 +1043,11 @@ export default function ResumePortfolio() {
 
             {showAddProjForm && isDevActive && (
               <div className="p-4 bg-emerald-50/80 border border-emerald-200 rounded-2xl text-xs space-y-3 mb-6 transition-all duration-300">
-                <p className="font-bold text-emerald-900">✨ Add New Academic Project with Multiple Files</p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <input type="text" placeholder="Project Title" value={newProj.title} onChange={(e) => setNewProj({ ...newProj, title: e.target.value })} className="p-2 bg-white rounded-lg border border-emerald-300" />
-                  <input type="text" placeholder="Date / Period" value={newProj.date} onChange={(e) => setNewProj({ ...newProj, date: e.target.value })} className="p-2 bg-white rounded-lg border border-emerald-300" />
-                </div>
-                <input type="text" placeholder="Badge / Tag" value={newProj.badge} onChange={(e) => setNewProj({ ...newProj, badge: e.target.value })} className="w-full p-2 bg-white rounded-lg border border-emerald-300" />
-                <textarea rows={2} placeholder="Description..." value={newProj.desc} onChange={(e) => setNewProj({ ...newProj, desc: e.target.value })} className="w-full p-2 bg-white rounded-lg border border-emerald-300" />
-
-                <div className="space-y-2 pt-2 border-t border-emerald-200">
-                  <p className="font-bold text-emerald-900">Public Docs Files:</p>
-                  {newProj.files.map((file, idx) => (
-                    <div key={idx} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-                      <input type="text" placeholder="Label" value={file.label} onChange={(e) => {
-                        const updated = [...newProj.files];
-                        updated[idx].label = e.target.value;
-                        setNewProj({ ...newProj, files: updated });
-                      }} className="p-1.5 bg-white rounded border border-emerald-300 flex-1" />
-                      <input type="text" placeholder="Path (/docs/...)" value={file.url} onChange={(e) => {
-                        const updated = [...newProj.files];
-                        updated[idx].url = e.target.value;
-                        setNewProj({ ...newProj, files: updated });
-                      }} className="p-1.5 bg-white rounded border border-emerald-300 flex-1" />
-                      <button onClick={() => setNewProj({ ...newProj, files: newProj.files.filter((_, i) => i !== idx) })} className="p-1 bg-rose-500 text-white rounded flex items-center justify-center"><Trash2 className="w-3.5 h-3.5" /></button>
-                    </div>
-                  ))}
-                  <button onClick={() => setNewProj({ ...newProj, files: [...newProj.files, { label: "", url: "" }] })} className="px-2.5 py-1 bg-emerald-700 text-white text-[10px] font-bold rounded flex items-center gap-1">
-                    <Plus className="w-3 h-3" /> Add Document
-                  </button>
-                </div>
-                
+                <p className="font-bold text-emerald-900">✨ Add New Academic Project</p>
+                <input type="text" placeholder="Project Title" value={newProj.title} onChange={(e) => setNewProj({ ...newProj, title: e.target.value })} className="w-full p-2 bg-white rounded-lg border border-emerald-300" />
                 <div className="flex items-center gap-2 pt-2">
-                  <button onClick={handleAddProject} className="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg cursor-pointer shadow-sm">Save Project</button>
-                  <button onClick={() => setShowAddProjForm(false)} className="px-4 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-lg cursor-pointer shadow-sm">Cancel</button>
+                  <button onClick={handleAddProject} className="px-4 py-1.5 bg-emerald-600 text-white font-bold rounded-lg cursor-pointer shadow-sm">Save Project</button>
+                  <button onClick={() => setShowAddProjForm(false)} className="px-4 py-1.5 bg-slate-200 text-slate-700 font-bold rounded-lg cursor-pointer shadow-sm">Cancel</button>
                 </div>
               </div>
             )}
@@ -1163,105 +1074,21 @@ export default function ResumePortfolio() {
 
                     <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
                       {isDevActive && (
-                        <>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              if (editingSection === proj.id) {
-                                setEditingSection(null);
-                              } else {
-                                setDraftProject({ ...proj });
-                                setEditingSection(proj.id);
-                              }
-                            }}
-                            className="px-2 py-1 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-lg text-[10px] flex items-center gap-1 shadow-xs cursor-pointer"
-                          >
-                            <Edit2 className="w-3 h-3" />
-                          </button>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleRemoveProject(proj.id);
-                            }}
-                            className="p-1 bg-rose-100 hover:bg-rose-500 text-rose-600 hover:text-white rounded-lg transition cursor-pointer"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
-                        </>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleRemoveProject(proj.id);
+                          }}
+                          className="p-1 bg-rose-100 hover:bg-rose-500 text-rose-600 hover:text-white rounded-lg transition cursor-pointer"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
                       )}
                       <div className="p-1 sm:p-1.5 rounded-full bg-white border border-slate-200 shadow-xs group-hover/card:scale-110 transition-transform">
                         {expandedProj === proj.id ? <ChevronUp className="w-4 h-4 text-emerald-600" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
                       </div>
                     </div>
                   </div>
-
-                  {editingSection === proj.id && isDevActive && (
-                    <div className="p-4 bg-amber-50/70 border-b border-amber-200 text-xs space-y-3 transition-all duration-300">
-                      <p className="font-bold text-amber-900">⚙️ Edit Academic Project & Documents</p>
-                      <div>
-                        <label className="block font-semibold mb-1">Project Title:</label>
-                        <input type="text" value={draftProject?.title || ""} onChange={(e) => setDraftProject({ ...draftProject, title: e.target.value })} className="w-full p-2 bg-white rounded-lg border border-amber-300" />
-                      </div>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div>
-                          <label className="block font-semibold mb-1">Date / Period:</label>
-                          <input type="text" value={draftProject?.date || ""} onChange={(e) => setDraftProject({ ...draftProject, date: e.target.value })} className="w-full p-2 bg-white rounded-lg border border-amber-300" />
-                        </div>
-                        <div>
-                          <label className="block font-semibold mb-1">Badge / Tag:</label>
-                          <input type="text" value={draftProject?.badge || ""} onChange={(e) => setDraftProject({ ...draftProject, badge: e.target.value })} className="w-full p-2 bg-white rounded-lg border border-amber-300" />
-                        </div>
-                      </div>
-                      <div>
-                        <label className="block font-semibold mb-1">Description:</label>
-                        <textarea rows={3} value={draftProject?.desc || ""} onChange={(e) => setDraftProject({ ...draftProject, desc: e.target.value })} className="w-full p-2 bg-white rounded-lg border border-amber-300" />
-                      </div>
-
-                      <div className="space-y-2 pt-2 border-t border-amber-200">
-                        <p className="font-bold text-amber-900">Manage Documents:</p>
-                        {draftProject?.fileUrls?.map((file: any, fIdx: number) => (
-                          <div key={fIdx} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-                            <input type="text" value={file.label} onChange={(e) => {
-                              const updated = [...draftProject.fileUrls];
-                              updated[fIdx].label = e.target.value;
-                              setDraftProject({ ...draftProject, fileUrls: updated });
-                            }} className="p-1.5 bg-white rounded border border-amber-300 flex-1" placeholder="Label" />
-                            <input type="text" value={file.url} onChange={(e) => {
-                              const updated = [...draftProject.fileUrls];
-                              updated[fIdx].url = e.target.value;
-                              setDraftProject({ ...draftProject, fileUrls: updated });
-                            }} className="p-1.5 bg-white rounded border border-amber-300 flex-1" placeholder="Path (/docs/...)" />
-                            <button onClick={() => {
-                              const updated = draftProject.fileUrls.filter((_: any, i: number) => i !== fIdx);
-                              setDraftProject({ ...draftProject, fileUrls: updated });
-                            }} className="p-1 bg-rose-500 text-white rounded flex items-center justify-center"><Trash2 className="w-3.5 h-3.5" /></button>
-                          </div>
-                        ))}
-                        <button onClick={() => setDraftProject({ ...draftProject, fileUrls: [...(draftProject?.fileUrls || []), { label: "", url: "" }] })} className="px-2 py-1 bg-amber-700 text-white text-[10px] rounded flex items-center gap-1">
-                          <Plus className="w-3 h-3" /> Add Document
-                        </button>
-                      </div>
-
-                      <div className="flex items-center gap-2 pt-2 border-t border-amber-200/60">
-                        <button
-                          onClick={() => {
-                            setProjects(projects.map(item => item.id === proj.id ? { ...draftProject } : item));
-                            setEditingSection(null);
-                            alert("Project item saved!");
-                          }}
-                          className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg flex items-center gap-1 cursor-pointer transition shadow-sm"
-                        >
-                          <Save className="w-3.5 h-3.5" /> Save
-                        </button>
-                        <button
-                          onClick={() => setEditingSection(null)}
-                          className="px-3.5 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-lg flex items-center gap-1 cursor-pointer transition shadow-sm"
-                        >
-                          <X className="w-3.5 h-3.5" /> Cancel
-                        </button>
-                      </div>
-                    </div>
-                  )}
 
                   <div className={`transition-all duration-300 ease-in-out overflow-hidden ${expandedProj === proj.id ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"}`}>
                     <div className="p-4 sm:p-5 bg-white border-t border-slate-100 text-xs text-slate-600 space-y-3 leading-relaxed border-l-4 border-l-emerald-500">
