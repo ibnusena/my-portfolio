@@ -52,7 +52,7 @@ export default function ResumePortfolio() {
     phone: "6285814409513",
     location: "South Jakarta, DKI Jakarta, Indonesia",
     photoUrl: "/docs/Sena.jpg", 
-    cvUrl: "/docs/CV_Muhammad_Ibnu_Sena.pdf",
+    cvUrl: "/docs/CV_MIS_QA.pdf",
   });
   const [draftProfile, setDraftProfile] = useState({ ...portfolioData });
 
